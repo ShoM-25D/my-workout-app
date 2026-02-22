@@ -5,6 +5,7 @@ import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 
 import { cn } from './utils';
 
+// ツールチップのプロバイダコンポーネント
 function TooltipProvider({
   delayDuration = 0,
   ...props
@@ -18,6 +19,7 @@ function TooltipProvider({
   );
 }
 
+// ツールチップのルートコンポーネント
 function Tooltip({
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Root>) {
@@ -28,12 +30,14 @@ function Tooltip({
   );
 }
 
+// ツールチップを開くトリガーコンポーネント
 function TooltipTrigger({
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
   return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />;
 }
 
+// ツールチップのコンテンツコンポーネント
 function TooltipContent({
   className,
   sideOffset = 0,

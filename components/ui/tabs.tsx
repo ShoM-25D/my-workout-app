@@ -5,6 +5,7 @@ import * as TabsPrimitive from '@radix-ui/react-tabs';
 
 import { cn } from './utils';
 
+// タブのコンポーネント
 function Tabs({
   className,
   ...props
@@ -17,7 +18,7 @@ function Tabs({
     />
   );
 }
-
+// タブのリストコンポーネント
 function TabsList({
   className,
   ...props
@@ -34,6 +35,7 @@ function TabsList({
   );
 }
 
+// タブのトリガーコンポーネント
 function TabsTrigger({
   className,
   ...props
@@ -50,6 +52,7 @@ function TabsTrigger({
   );
 }
 
+// タブのコンテンツコンポーネント
 function TabsContent({
   className,
   ...props

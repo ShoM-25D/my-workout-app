@@ -73,6 +73,7 @@ const FormItemContext = React.createContext<FormItemContextValue>(
   {} as FormItemContextValue,
 );
 
+// 一つの入力ブロック
 function FormItem({ className, ...props }: React.ComponentProps<'div'>) {
   const id = React.useId();
 
@@ -87,6 +88,7 @@ function FormItem({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+// 入力のラベル
 function FormLabel({
   className,
   ...props
@@ -104,6 +106,7 @@ function FormLabel({
   );
 }
 
+// 入力要素をラップするコンポーネント
 function FormControl({ ...props }: React.ComponentProps<typeof Slot>) {
   const { error, formItemId, formDescriptionId, formMessageId } =
     useFormField();
@@ -123,6 +126,7 @@ function FormControl({ ...props }: React.ComponentProps<typeof Slot>) {
   );
 }
 
+// 入力の説明文
 function FormDescription({ className, ...props }: React.ComponentProps<'p'>) {
   const { formDescriptionId } = useFormField();
 
@@ -136,6 +140,7 @@ function FormDescription({ className, ...props }: React.ComponentProps<'p'>) {
   );
 }
 
+// 入力のエラーメッセージ
 function FormMessage({ className, ...props }: React.ComponentProps<'p'>) {
   const { error, formMessageId } = useFormField();
   const body = error ? String(error?.message ?? '') : props.children;

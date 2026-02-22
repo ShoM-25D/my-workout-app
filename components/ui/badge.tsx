@@ -10,12 +10,16 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default:
+          // 濃い色の背景、重要なタグ用
           'border-transparent bg-primary text-primary-foreground [a&]:hover:bg-primary/90',
         secondary:
+          // 薄い色の背景、あまり重要でないタグ用
           'border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90',
         destructive:
+          // 赤系の背景、危険なタグ用
           'border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
         outline:
+          // 透明な背景、すっきり見せる用
           'text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground',
       },
     },
@@ -25,6 +29,7 @@ const badgeVariants = cva(
   },
 );
 
+// バッジコンポーネント
 function Badge({
   className,
   variant,
@@ -32,6 +37,7 @@ function Badge({
   ...props
 }: React.ComponentProps<'span'> &
   VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
+  // 見た目はバッジ、中身はリンク
   const Comp = asChild ? Slot : 'span';
 
   return (

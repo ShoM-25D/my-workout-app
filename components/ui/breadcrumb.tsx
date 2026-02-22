@@ -4,10 +4,12 @@ import { ChevronRight, MoreHorizontal } from 'lucide-react';
 
 import { cn } from './utils';
 
+// 全体を囲むナビゲーション要素
 function Breadcrumb({ ...props }: React.ComponentProps<'nav'>) {
   return <nav aria-label="breadcrumb" data-slot="breadcrumb" {...props} />;
 }
 
+// パンくずリストを表示するための順序付きリスト
 function BreadcrumbList({ className, ...props }: React.ComponentProps<'ol'>) {
   return (
     <ol
@@ -21,6 +23,7 @@ function BreadcrumbList({ className, ...props }: React.ComponentProps<'ol'>) {
   );
 }
 
+// パンくずリストの各アイテムを表すリストアイテム
 function BreadcrumbItem({ className, ...props }: React.ComponentProps<'li'>) {
   return (
     <li
@@ -31,6 +34,7 @@ function BreadcrumbItem({ className, ...props }: React.ComponentProps<'li'>) {
   );
 }
 
+// パンくずリストのリンクを表すコンポーネント。
 function BreadcrumbLink({
   asChild,
   className,
@@ -49,6 +53,7 @@ function BreadcrumbLink({
   );
 }
 
+// 現在のページを表すコンポーネント。リンクではなく、テキストとして表示される。
 function BreadcrumbPage({ className, ...props }: React.ComponentProps<'span'>) {
   return (
     <span
@@ -62,6 +67,7 @@ function BreadcrumbPage({ className, ...props }: React.ComponentProps<'span'>) {
   );
 }
 
+// パンくずリストのアイテムを区切るためのセパレーター。デフォルトでは、右向きの矢印が表示される。
 function BreadcrumbSeparator({
   children,
   className,
@@ -80,6 +86,7 @@ function BreadcrumbSeparator({
   );
 }
 
+// パンくずリストのアイテムが多すぎてスペースが足りない場合に表示される省略記号。デフォルトでは、3点リーダーが表示される。
 function BreadcrumbEllipsis({
   className,
   ...props

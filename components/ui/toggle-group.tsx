@@ -14,6 +14,7 @@ const ToggleGroupContext = React.createContext<
   variant: 'default',
 });
 
+// トグルグループのコンポーネント
 function ToggleGroup({
   className,
   variant,
@@ -40,6 +41,7 @@ function ToggleGroup({
   );
 }
 
+// トグルグループのアイテムコンポーネント
 function ToggleGroupItem({
   className,
   children,

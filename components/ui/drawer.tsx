@@ -5,30 +5,35 @@ import { Drawer as DrawerPrimitive } from 'vaul';
 
 import { cn } from './utils';
 
+// ドロワーのルートコンポーネント
 function Drawer({
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Root>) {
   return <DrawerPrimitive.Root data-slot="drawer" {...props} />;
 }
 
+// ドロワーをトリガーする要素
 function DrawerTrigger({
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Trigger>) {
   return <DrawerPrimitive.Trigger data-slot="drawer-trigger" {...props} />;
 }
 
+// ドロワーの内容を表示するためのポータル
 function DrawerPortal({
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Portal>) {
   return <DrawerPrimitive.Portal data-slot="drawer-portal" {...props} />;
 }
 
+// ドロワーを閉じるための要素
 function DrawerClose({
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Close>) {
   return <DrawerPrimitive.Close data-slot="drawer-close" {...props} />;
 }
 
+// ドロワーのオーバーレイを定義するコンポーネント
 function DrawerOverlay({
   className,
   ...props
@@ -45,6 +50,7 @@ function DrawerOverlay({
   );
 }
 
+// ドロワーの内容を定義するコンポーネント
 function DrawerContent({
   className,
   children,
@@ -72,6 +78,7 @@ function DrawerContent({
   );
 }
 
+// サブメニューをトリガーする要素
 function DrawerHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -82,6 +89,7 @@ function DrawerHeader({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+// サブメニューの内容を表示するコンポーネント
 function DrawerFooter({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -92,6 +100,7 @@ function DrawerFooter({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+// ドロワーのタイトルを定義するコンポーネント
 function DrawerTitle({
   className,
   ...props
@@ -105,6 +114,7 @@ function DrawerTitle({
   );
 }
 
+// ドロワーの説明を定義するコンポーネント
 function DrawerDescription({
   className,
   ...props

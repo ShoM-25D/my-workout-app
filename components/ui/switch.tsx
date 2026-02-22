@@ -5,6 +5,7 @@ import * as SwitchPrimitive from '@radix-ui/react-switch';
 
 import { cn } from './utils';
 
+// スイッチのコンポーネント
 function Switch({
   className,
   ...props

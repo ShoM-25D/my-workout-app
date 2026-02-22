@@ -5,18 +5,21 @@ import * as PopoverPrimitive from '@radix-ui/react-popover';
 
 import { cn } from './utils';
 
+// ポップオーバーの全体コンポーネント
 function Popover({
   ...props
 }: React.ComponentProps<typeof PopoverPrimitive.Root>) {
   return <PopoverPrimitive.Root data-slot="popover" {...props} />;
 }
 
+// ポップオーバーのトリガーコンポーネント
 function PopoverTrigger({
   ...props
 }: React.ComponentProps<typeof PopoverPrimitive.Trigger>) {
   return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />;
 }
 
+// ポップオーバーの内容コンポーネント
 function PopoverContent({
   className,
   align = 'center',
@@ -39,6 +42,7 @@ function PopoverContent({
   );
 }
 
+// ポップオーバーのアンカーコンポーネント
 function PopoverAnchor({
   ...props
 }: React.ComponentProps<typeof PopoverPrimitive.Anchor>) {

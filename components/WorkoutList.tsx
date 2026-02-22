@@ -1,22 +1,28 @@
 import { useState } from 'react';
-import { Workout } from '../App';
+import { Workout } from '../app/page';
 import { ChevronLeft, ChevronRight, Calendar, Clock } from 'lucide-react';
 
+// トレーニング記録のリストを表示するコンポーネント。日付、時間、種目ごとのセット内容を一覧で表示し、クリックで詳細に遷移できるようにする
 type WorkoutListProps = {
   workouts: Workout[];
   onViewWorkout: (workout: Workout) => void;
 };
 
+// 1ページあたりの表示件数を定義
 const ITEMS_PER_PAGE = 5;
 
+// トレーニング記録のリストを表示するコンポーネント。日付、時間、種目ごとのセット内容を一覧で表示し、クリックで詳細に遷移できるようにする
 export function WorkoutList({ workouts, onViewWorkout }: WorkoutListProps) {
+  // 現在のページを管理する状態。初期値は1ページ目
   const [currentPage, setCurrentPage] = useState(1);
 
+  // ページネーションのために、総ページ数を計算し、現在のページに表示するトレーニング記録のスライスを作成する
   const totalPages = Math.ceil(workouts.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentWorkouts = workouts.slice(startIndex, endIndex);
 
+  // 日付を日本語表記にフォーマットする関数。toLocaleDateStringを使って年月日と曜日を表示する
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('ja-JP', {

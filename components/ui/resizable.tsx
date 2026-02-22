@@ -6,6 +6,7 @@ import * as ResizablePrimitive from 'react-resizable-panels';
 
 import { cn } from './utils';
 
+// リサイズ可能なパネルグループコンポーネント
 function ResizablePanelGroup({
   className,
   ...props
@@ -22,12 +23,14 @@ function ResizablePanelGroup({
   );
 }
 
+// リサイズ可能なパネルコンポーネント
 function ResizablePanel({
   ...props
 }: React.ComponentProps<typeof ResizablePrimitive.Panel>) {
   return <ResizablePrimitive.Panel data-slot="resizable-panel" {...props} />;
 }
 
+// リサイズハンドルコンポーネント
 function ResizableHandle({
   withHandle,
   className,

@@ -6,6 +6,7 @@ import { CircleIcon } from 'lucide-react';
 
 import { cn } from './utils';
 
+// ラジオグループコンポーネント
 function RadioGroup({
   className,
   ...props
@@ -19,6 +20,7 @@ function RadioGroup({
   );
 }
 
+// ラジオグループアイテムコンポーネント
 function RadioGroupItem({
   className,
   ...props

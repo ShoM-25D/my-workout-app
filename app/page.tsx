@@ -5,12 +5,13 @@ import { LoginPage } from '../components/LoginPage';
 import { Dashboard } from '../components/Dashboard';
 import { WorkoutDetail } from '../components/WorkoutDetail';
 
+// ログインユーザの情報
 export type User = {
   id: string;
   name: string;
   email: string;
 };
-
+// トレーニング種目
 export type Exercise = {
   id: string;
   name: string;
@@ -21,6 +22,7 @@ export type Exercise = {
   bodyPart: string;
 };
 
+// トレーニングの記録
 export type Workout = {
   id: string;
   date: string;
@@ -31,15 +33,18 @@ export type Workout = {
   bodyFat?: number;
 };
 
+// アプリの表示状態
 export type View = 'login' | 'dashboard' | 'detail';
 
 function App() {
+  // 簡易型ルーティング（今後はReact Routerなどを導入予定、戻るができない）
   const [currentView, setCurrentView] = useState<View>('login');
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(null);
 
+  // ユーザのログイン情報、画面の状態を管理 - handle系
   const handleLogin = (email: string, password: string) => {
-    // Mock login - in production this would validate credentials
+    // Mock login - 本番環境では認証情報を検証します
     setCurrentUser({
       id: '1',
       name: 'トレーニー',

@@ -6,6 +6,7 @@ import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react';
 
 import { cn } from './utils';
 
+// メニューバーのルートコンポーネント
 function Menubar({
   className,
   ...props
@@ -22,24 +23,28 @@ function Menubar({
   );
 }
 
+// メニューバーのメニューコンポーネント
 function MenubarMenu({
   ...props
 }: React.ComponentProps<typeof MenubarPrimitive.Menu>) {
   return <MenubarPrimitive.Menu data-slot="menubar-menu" {...props} />;
 }
 
+// メニューバーのグループコンポーネント
 function MenubarGroup({
   ...props
 }: React.ComponentProps<typeof MenubarPrimitive.Group>) {
   return <MenubarPrimitive.Group data-slot="menubar-group" {...props} />;
 }
 
+// メニューバーのポータルコンポーネント
 function MenubarPortal({
   ...props
 }: React.ComponentProps<typeof MenubarPrimitive.Portal>) {
   return <MenubarPrimitive.Portal data-slot="menubar-portal" {...props} />;
 }
 
+// メニューバーのラジオグループコンポーネント
 function MenubarRadioGroup({
   ...props
 }: React.ComponentProps<typeof MenubarPrimitive.RadioGroup>) {
@@ -48,6 +53,7 @@ function MenubarRadioGroup({
   );
 }
 
+// メニューバーのトリガーコンポーネント
 function MenubarTrigger({
   className,
   ...props
@@ -64,6 +70,7 @@ function MenubarTrigger({
   );
 }
 
+// メニューバーの内容コンポーネント
 function MenubarContent({
   className,
   align = 'start',
@@ -88,6 +95,7 @@ function MenubarContent({
   );
 }
 
+// メニューバーのアイテムコンポーネント
 function MenubarItem({
   className,
   inset,
@@ -111,6 +119,7 @@ function MenubarItem({
   );
 }
 
+// メニューバーのチェックボックスアイテムコンポーネント
 function MenubarCheckboxItem({
   className,
   children,
@@ -137,6 +146,7 @@ function MenubarCheckboxItem({
   );
 }
 
+// メニューバーのラジオアイテムコンポーネント
 function MenubarRadioItem({
   className,
   children,
@@ -161,6 +171,7 @@ function MenubarRadioItem({
   );
 }
 
+// メニューバーのラベルコンポーネント
 function MenubarLabel({
   className,
   inset,
@@ -181,6 +192,7 @@ function MenubarLabel({
   );
 }
 
+// メニューバーのセパレーターコンポーネント
 function MenubarSeparator({
   className,
   ...props
@@ -194,6 +206,7 @@ function MenubarSeparator({
   );
 }
 
+// メニューバーのショートカットコンポーネント
 function MenubarShortcut({
   className,
   ...props
@@ -210,12 +223,14 @@ function MenubarShortcut({
   );
 }
 
+// メニューバーのサブメニューコンポーネント
 function MenubarSub({
   ...props
 }: React.ComponentProps<typeof MenubarPrimitive.Sub>) {
   return <MenubarPrimitive.Sub data-slot="menubar-sub" {...props} />;
 }
 
+// メニューバーのサブメニューのトリガーコンポーネント
 function MenubarSubTrigger({
   className,
   inset,
@@ -240,6 +255,7 @@ function MenubarSubTrigger({
   );
 }
 
+// メニューバーのサブメニューの内容コンポーネント
 function MenubarSubContent({
   className,
   ...props

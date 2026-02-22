@@ -42,6 +42,7 @@ function useCarousel() {
   return context;
 }
 
+// 全体を囲む箱
 function Carousel({
   orientation = 'horizontal',
   opts,
@@ -132,6 +133,7 @@ function Carousel({
   );
 }
 
+// Carouselが持っている情報をネストされたコンポーネントで共有するためのContextを作成
 function CarouselContent({ className, ...props }: React.ComponentProps<'div'>) {
   const { carouselRef, orientation } = useCarousel();
 
@@ -152,7 +154,7 @@ function CarouselContent({ className, ...props }: React.ComponentProps<'div'>) {
     </div>
   );
 }
-
+// 1枚1枚のスライド
 function CarouselItem({ className, ...props }: React.ComponentProps<'div'>) {
   const { orientation } = useCarousel();
 
@@ -171,6 +173,7 @@ function CarouselItem({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+// 前のスライドに移動するボタン
 function CarouselPrevious({
   className,
   variant = 'outline',
@@ -201,6 +204,7 @@ function CarouselPrevious({
   );
 }
 
+// 次のスライドに移動するボタン
 function CarouselNext({
   className,
   variant = 'outline',

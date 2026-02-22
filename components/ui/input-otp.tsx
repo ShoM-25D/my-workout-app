@@ -6,6 +6,7 @@ import { MinusIcon } from 'lucide-react';
 
 import { cn } from './utils';
 
+// OTP入力コンポーネント
 function InputOTP({
   className,
   containerClassName,
@@ -26,6 +27,7 @@ function InputOTP({
   );
 }
 
+// OTP入力のグループコンポーネント
 function InputOTPGroup({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -36,6 +38,7 @@ function InputOTPGroup({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+// OTP入力のスロットコンポーネント
 function InputOTPSlot({
   index,
   className,
@@ -66,6 +69,7 @@ function InputOTPSlot({
   );
 }
 
+// OTP入力のセパレーターコンポーネント
 function InputOTPSeparator({ ...props }: React.ComponentProps<'div'>) {
   return (
     <div data-slot="input-otp-separator" role="separator" {...props}>

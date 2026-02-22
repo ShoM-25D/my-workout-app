@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from './dialog';
 
+// 全体のコンテナ
 function Command({
   className,
   ...props
@@ -29,6 +30,7 @@ function Command({
   );
 }
 
+// コマンドパレットを表示するためのダイアログコンポーネント
 function CommandDialog({
   title = 'Command Palette',
   description = 'Search for a command to run...',
@@ -53,6 +55,7 @@ function CommandDialog({
   );
 }
 
+// 検索窓
 function CommandInput({
   className,
   ...props
@@ -75,6 +78,7 @@ function CommandInput({
   );
 }
 
+// 検索を結果を表示するリスト
 function CommandList({
   className,
   ...props
@@ -91,6 +95,7 @@ function CommandList({
   );
 }
 
+// 検索結果がゼロだった時に表示するコンポーネント
 function CommandEmpty({
   ...props
 }: React.ComponentProps<typeof CommandPrimitive.Empty>) {
@@ -103,6 +108,7 @@ function CommandEmpty({
   );
 }
 
+// 項目ごとにグループ化するためのコンポーネント
 function CommandGroup({
   className,
   ...props
@@ -119,6 +125,7 @@ function CommandGroup({
   );
 }
 
+// 項目を区切るためのコンポーネント
 function CommandSeparator({
   className,
   ...props
@@ -132,6 +139,7 @@ function CommandSeparator({
   );
 }
 
+// 一つ一つの選択肢を表すコンポーネント
 function CommandItem({
   className,
   ...props
@@ -148,6 +156,7 @@ function CommandItem({
   );
 }
 
+// ショートカットキーを表示するためのコンポーネント
 function CommandShortcut({
   className,
   ...props

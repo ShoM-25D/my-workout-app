@@ -15,6 +15,7 @@ function Calendar({
 }: React.ComponentProps<typeof DayPicker>) {
   return (
     <DayPicker
+      // 前後の月の日付を表示するかどうかを指定
       showOutsideDays={showOutsideDays}
       className={cn('p-3', className)}
       classNames={{
@@ -23,6 +24,7 @@ function Calendar({
         caption: 'flex justify-center pt-1 relative items-center w-full',
         caption_label: 'text-sm font-medium',
         nav: 'flex items-center gap-1',
+        // カレンダー内のボタンのスタイルを定義
         nav_button: cn(
           buttonVariants({ variant: 'outline' }),
           'size-7 bg-transparent p-0 opacity-50 hover:opacity-100',
@@ -36,6 +38,7 @@ function Calendar({
         row: 'flex w-full mt-2',
         cell: cn(
           'relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent [&:has([aria-selected].day-range-end)]:rounded-r-md',
+          // 範囲選択モードの場合、開始日と終了日のスタイルを定義
           props.mode === 'range'
             ? '[&:has(>.day-range-end)]:rounded-r-md [&:has(>.day-range-start)]:rounded-l-md first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md'
             : '[&:has([aria-selected])]:rounded-md',
@@ -49,7 +52,9 @@ function Calendar({
         day_range_end:
           'day-range-end aria-selected:bg-primary aria-selected:text-primary-foreground',
         day_selected:
+          // 選択中の日付のスタイルを定義
           'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground',
+        // 今日の日付のスタイルを定義
         day_today: 'bg-accent text-accent-foreground',
         day_outside:
           'day-outside text-muted-foreground aria-selected:text-muted-foreground',

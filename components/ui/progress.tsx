@@ -5,6 +5,7 @@ import * as ProgressPrimitive from '@radix-ui/react-progress';
 
 import { cn } from './utils';
 
+// プログレスバーの全体コンポーネント
 function Progress({
   className,
   value,

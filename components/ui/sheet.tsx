@@ -6,28 +6,33 @@ import { XIcon } from 'lucide-react';
 
 import { cn } from './utils';
 
+// シートのラッパーコンポーネント
 function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />;
 }
 
+// シートを開くトリガーコンポーネント
 function SheetTrigger({
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Trigger>) {
   return <SheetPrimitive.Trigger data-slot="sheet-trigger" {...props} />;
 }
 
+// シートを閉じるトリガーコンポーネント
 function SheetClose({
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Close>) {
   return <SheetPrimitive.Close data-slot="sheet-close" {...props} />;
 }
 
+// シートのポータルコンポーネント
 function SheetPortal({
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Portal>) {
   return <SheetPrimitive.Portal data-slot="sheet-portal" {...props} />;
 }
 
+// シートのオーバーレイコンポーネント
 function SheetOverlay({
   className,
   ...props
@@ -44,6 +49,7 @@ function SheetOverlay({
   );
 }
 
+// シートのコンテンツコンポーネント
 function SheetContent({
   className,
   children,
@@ -81,6 +87,7 @@ function SheetContent({
   );
 }
 
+// シートのヘッダーコンポーネント
 function SheetHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -91,6 +98,7 @@ function SheetHeader({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+// シートのフッターコンポーネント
 function SheetFooter({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -101,6 +109,7 @@ function SheetFooter({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+// シートのタイトルコンポーネント
 function SheetTitle({
   className,
   ...props
@@ -114,6 +123,7 @@ function SheetTitle({
   );
 }
 
+// シートの説明コンポーネント
 function SheetDescription({
   className,
   ...props

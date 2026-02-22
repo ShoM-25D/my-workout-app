@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { cn } from './utils';
 
+// 入力コンポーネント
 function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
   return (
     <input

@@ -1,12 +1,15 @@
-import { Workout } from '../App';
+import { Workout } from '../app/page';
 import { ArrowLeft, Calendar, Clock, Weight, Activity } from 'lucide-react';
 
+// トレーニング記録の詳細を表示するコンポーネント
 type WorkoutDetailProps = {
   workout: Workout;
   onBack: () => void;
 };
 
+// トレーニング記録の詳細を表示するコンポーネント。日付、時間、種目ごとのセット内容などを見やすく表示する
 export function WorkoutDetail({ workout, onBack }: WorkoutDetailProps) {
+  // 日付を日本語表記にフォーマットする関数。toLocaleDateStringを使って年月日と曜日を表示する
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('ja-JP', {
@@ -17,6 +20,7 @@ export function WorkoutDetail({ workout, onBack }: WorkoutDetailProps) {
     });
   };
 
+  // トレーニング全体の総ボリュームを計算する。各セットの重量×回数を合計する
   const totalVolume = workout.exercises.reduce((sum, exercise) => {
     const exerciseVolume = exercise.sets.reduce(
       (setSum, set) => setSum + set.weight * set.reps,

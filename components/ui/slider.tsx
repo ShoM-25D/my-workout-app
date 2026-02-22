@@ -5,6 +5,7 @@ import * as SliderPrimitive from '@radix-ui/react-slider';
 
 import { cn } from './utils';
 
+// スライダーのコンポーネント
 function Slider({
   className,
   defaultValue,

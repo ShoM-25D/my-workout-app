@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { X, Plus, Trash2 } from 'lucide-react';
-import { Workout, Exercise } from '../App';
+import { Workout, Exercise } from '../app/page';
 
 type AddWorkoutModalProps = {
   onClose: () => void;
@@ -27,25 +27,32 @@ const commonExercises: Record<string, string[]> = {
   腹筋: ['クランチ', 'レッグレイズ', 'プランク', 'アブローラー'],
 };
 
+// トレーニング記録を追加するモーダルコンポーネント
 export function AddWorkoutModal({ onClose, onAdd }: AddWorkoutModalProps) {
+  // 日付の状態を管理（初期値は今日の日付）
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  // トレーニングの時間、種目、メモ、体重、体脂肪率などの状態を管理
   const [duration, setDuration] = useState(60);
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [notes, setNotes] = useState('');
   const [bodyWeight, setBodyWeight] = useState('');
   const [bodyFat, setBodyFat] = useState('');
 
+  // 種目の選択とカスタム種目の入力を管理する状態
   const [selectedBodyPart, setSelectedBodyPart] = useState('胸');
   const [selectedExercise, setSelectedExercise] = useState('');
   const [customExerciseName, setCustomExerciseName] = useState('');
   const [isCustomExercise, setIsCustomExercise] = useState(false);
 
+  // 種目を追加する関数
   const addExercise = () => {
+    // 選択された種目名を取得（カスタム種目の場合はカスタム種目名を使用）
     const exerciseName = isCustomExercise
       ? customExerciseName
       : selectedExercise;
     if (!exerciseName || exerciseName.trim() === '') return;
 
+    // 新しい種目オブジェクトを作成し、既存の種目リストに追加
     const newExercise: Exercise = {
       id: Date.now().toString(),
       name: exerciseName.trim(),
@@ -59,10 +66,12 @@ export function AddWorkoutModal({ onClose, onAdd }: AddWorkoutModalProps) {
     setIsCustomExercise(false);
   };
 
+  // 種目を削除する関数
   const removeExercise = (id: string) => {
     setExercises(exercises.filter((e) => e.id !== id));
   };
 
+  // セットの重量や回数を更新する関数
   const updateSet = (
     exerciseId: string,
     setIndex: number,
@@ -81,6 +90,7 @@ export function AddWorkoutModal({ onClose, onAdd }: AddWorkoutModalProps) {
     );
   };
 
+  // セットを追加する関数
   const addSet = (exerciseId: string) => {
     setExercises(
       exercises.map((exercise) => {
@@ -95,6 +105,7 @@ export function AddWorkoutModal({ onClose, onAdd }: AddWorkoutModalProps) {
     );
   };
 
+  // セットを削除する関数（ただし、最低1セットは残す）
   const removeSet = (exerciseId: string, setIndex: number) => {
     setExercises(
       exercises.map((exercise) => {
@@ -109,9 +120,11 @@ export function AddWorkoutModal({ onClose, onAdd }: AddWorkoutModalProps) {
     );
   };
 
+  // フォームの送信処理。入力されたデータをまとめて新しいトレーニング記録オブジェクトを作成し、onAddコールバックに渡す
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    // 新しいトレーニング記録オブジェクトを作成
     const workout: Workout = {
       id: Date.now().toString(),
       date: date,

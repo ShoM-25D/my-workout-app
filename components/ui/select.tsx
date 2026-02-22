@@ -6,24 +6,28 @@ import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 
 import { cn } from './utils';
 
+// 選択コンポーネントのラッパー
 function Select({
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Root>) {
   return <SelectPrimitive.Root data-slot="select" {...props} />;
 }
 
+// 選択グループのラッパー
 function SelectGroup({
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Group>) {
   return <SelectPrimitive.Group data-slot="select-group" {...props} />;
 }
 
+// 選択値のラッパー
 function SelectValue({
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Value>) {
   return <SelectPrimitive.Value data-slot="select-value" {...props} />;
 }
 
+// 選択トリガーのラッパー
 function SelectTrigger({
   className,
   size = 'default',
@@ -50,6 +54,7 @@ function SelectTrigger({
   );
 }
 
+// 選択コンテンツのラッパー
 function SelectContent({
   className,
   children,
@@ -85,6 +90,7 @@ function SelectContent({
   );
 }
 
+// 選択ラベルのラッパー
 function SelectLabel({
   className,
   ...props
@@ -98,6 +104,7 @@ function SelectLabel({
   );
 }
 
+// 選択アイテムのラッパー
 function SelectItem({
   className,
   children,
@@ -122,6 +129,7 @@ function SelectItem({
   );
 }
 
+// 選択セパレーターのラッパー
 function SelectSeparator({
   className,
   ...props
@@ -135,6 +143,7 @@ function SelectSeparator({
   );
 }
 
+// 選択スクロールアップボタンのラッパー
 function SelectScrollUpButton({
   className,
   ...props
@@ -153,6 +162,7 @@ function SelectScrollUpButton({
   );
 }
 
+// 選択スクロールダウンボタンのラッパー
 function SelectScrollDownButton({
   className,
   ...props

@@ -1,4 +1,4 @@
-import { Workout } from '../App';
+import { Workout } from '../app/page';
 import {
   LineChart,
   Line,
@@ -11,12 +11,14 @@ import {
 } from 'recharts';
 import { TrendingUp } from 'lucide-react';
 
+// トレーニングの重量推移を表示するコンポーネント
 type ProgressChartProps = {
   workouts: Workout[];
 };
 
+// トレーニング記録から種目ごとの重量推移を計算し、LineChartで表示するコンポーネント
 export function ProgressChart({ workouts }: ProgressChartProps) {
-  // Get all unique exercises
+  // トレーニング記録から種目名のセットを作成
   const exercises = new Set<string>();
   workouts.forEach((workout) => {
     workout.exercises.forEach((exercise) => {
@@ -24,7 +26,7 @@ export function ProgressChart({ workouts }: ProgressChartProps) {
     });
   });
 
-  // For simplicity, show progress for top 3 exercises by frequency
+  // 種目ごとの頻度を計算して、上位3種目を抽出
   const exerciseFrequency = new Map<string, number>();
   workouts.forEach((workout) => {
     workout.exercises.forEach((exercise) => {
@@ -35,12 +37,13 @@ export function ProgressChart({ workouts }: ProgressChartProps) {
     });
   });
 
+  // 頻度の高い上位3種目を抽出
   const topExercises = Array.from(exerciseFrequency.entries())
     .sort((a, b) => b[1] - a[1])
     .slice(0, 3)
     .map(([name]) => name);
 
-  // Build chart data
+  // トレーニング記録を日付順に並べ替え、上位3種目の重量推移のデータポイントを作成
   const chartData = workouts
     .slice()
     .reverse()
@@ -53,6 +56,7 @@ export function ProgressChart({ workouts }: ProgressChartProps) {
         }),
       };
 
+      // 上位3種目の重量をデータポイントに追加。該当種目がない場合は0とする
       topExercises.forEach((exerciseName) => {
         const exercise = workout.exercises.find((e) => e.name === exerciseName);
         if (exercise && exercise.sets.length > 0) {
@@ -65,6 +69,7 @@ export function ProgressChart({ workouts }: ProgressChartProps) {
       return dataPoint;
     });
 
+  // ラインの色を定義。上位3種目に対応させる
   const colors = ['#6366f1', '#ec4899', '#10b981'];
 
   return (

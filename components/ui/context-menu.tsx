@@ -6,12 +6,14 @@ import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react';
 
 import { cn } from './utils';
 
+// 通常のクリック項目
 function ContextMenu({
   ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.Root>) {
   return <ContextMenuPrimitive.Root data-slot="context-menu" {...props} />;
 }
 
+// コンテキストメニューをトリガーする要素
 function ContextMenuTrigger({
   ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.Trigger>) {
@@ -20,6 +22,7 @@ function ContextMenuTrigger({
   );
 }
 
+// グループ化された項目のコンテナ
 function ContextMenuGroup({
   ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.Group>) {
@@ -28,6 +31,7 @@ function ContextMenuGroup({
   );
 }
 
+// コンテキストメニューの内容を表示するためのポータル
 function ContextMenuPortal({
   ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.Portal>) {
@@ -36,12 +40,14 @@ function ContextMenuPortal({
   );
 }
 
+// サブメニューを定義するコンポーネント
 function ContextMenuSub({
   ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.Sub>) {
   return <ContextMenuPrimitive.Sub data-slot="context-menu-sub" {...props} />;
 }
 
+// ラジオグループを定義するコンポーネント
 function ContextMenuRadioGroup({
   ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.RadioGroup>) {
@@ -53,6 +59,7 @@ function ContextMenuRadioGroup({
   );
 }
 
+// サブメニューをトリガーする要素
 function ContextMenuSubTrigger({
   className,
   inset,
@@ -77,6 +84,7 @@ function ContextMenuSubTrigger({
   );
 }
 
+// サブメニューの内容を表示するコンポーネント
 function ContextMenuSubContent({
   className,
   ...props
@@ -93,6 +101,7 @@ function ContextMenuSubContent({
   );
 }
 
+// コンテキストメニューの内容を表示するコンポーネント
 function ContextMenuContent({
   className,
   ...props
@@ -111,6 +120,7 @@ function ContextMenuContent({
   );
 }
 
+// コンテキストメニューの項目を定義するコンポーネント
 function ContextMenuItem({
   className,
   inset,
@@ -134,6 +144,7 @@ function ContextMenuItem({
   );
 }
 
+// チェックボックス項目を定義するコンポーネント
 function ContextMenuCheckboxItem({
   className,
   children,
@@ -160,6 +171,7 @@ function ContextMenuCheckboxItem({
   );
 }
 
+// ラジオ項目を定義するコンポーネント
 function ContextMenuRadioItem({
   className,
   children,
@@ -184,6 +196,7 @@ function ContextMenuRadioItem({
   );
 }
 
+// ラベル項目を定義するコンポーネント
 function ContextMenuLabel({
   className,
   inset,
@@ -204,6 +217,7 @@ function ContextMenuLabel({
   );
 }
 
+// セパレーター項目を定義するコンポーネント
 function ContextMenuSeparator({
   className,
   ...props
@@ -217,6 +231,7 @@ function ContextMenuSeparator({
   );
 }
 
+// ショートカット表示用のコンポーネント
 function ContextMenuShortcut({
   className,
   ...props

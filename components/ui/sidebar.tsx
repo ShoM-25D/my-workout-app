@@ -44,6 +44,7 @@ type SidebarContextProps = {
 
 const SidebarContext = React.createContext<SidebarContextProps | null>(null);
 
+// サイドバーの状態を管理するためのカスタムフック
 function useSidebar() {
   const context = React.useContext(SidebarContext);
   if (!context) {
@@ -53,6 +54,7 @@ function useSidebar() {
   return context;
 }
 
+// サイドバー全体をラップするプロバイダコンポーネント
 function SidebarProvider({
   defaultOpen = true,
   open: openProp,
@@ -151,6 +153,7 @@ function SidebarProvider({
   );
 }
 
+// サイドバーコンポーネント
 function Sidebar({
   side = 'left',
   variant = 'sidebar',
@@ -253,6 +256,7 @@ function Sidebar({
   );
 }
 
+// サイドバーのトリガーコンポーネント
 function SidebarTrigger({
   className,
   onClick,
@@ -279,6 +283,7 @@ function SidebarTrigger({
   );
 }
 
+// サイドバーのレールコンポーネント
 function SidebarRail({ className, ...props }: React.ComponentProps<'button'>) {
   const { toggleSidebar } = useSidebar();
 
@@ -304,6 +309,7 @@ function SidebarRail({ className, ...props }: React.ComponentProps<'button'>) {
   );
 }
 
+// サイドバーのコンテンツコンポーネント
 function SidebarInset({ className, ...props }: React.ComponentProps<'main'>) {
   return (
     <main
@@ -318,6 +324,7 @@ function SidebarInset({ className, ...props }: React.ComponentProps<'main'>) {
   );
 }
 
+// サイドバーの入力コンポーネント
 function SidebarInput({
   className,
   ...props
@@ -332,6 +339,7 @@ function SidebarInput({
   );
 }
 
+// サイドバーのコンテンツコンポーネント
 function SidebarHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -343,6 +351,7 @@ function SidebarHeader({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+// サイドバーのコンテンツコンポーネント
 function SidebarFooter({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -354,6 +363,7 @@ function SidebarFooter({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+// サイドバーのコンテンツコンポーネント
 function SidebarSeparator({
   className,
   ...props
@@ -368,6 +378,7 @@ function SidebarSeparator({
   );
 }
 
+// サイドバーのコンテンツコンポーネント
 function SidebarContent({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -382,6 +393,7 @@ function SidebarContent({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+// サイドバーのコンテンツコンポーネント
 function SidebarGroup({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -393,6 +405,7 @@ function SidebarGroup({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+// サイドバーのコンテンツコンポーネント
 function SidebarGroupLabel({
   className,
   asChild = false,
@@ -414,6 +427,7 @@ function SidebarGroupLabel({
   );
 }
 
+// サイドバーのコンテンツコンポーネント
 function SidebarGroupAction({
   className,
   asChild = false,
@@ -437,6 +451,7 @@ function SidebarGroupAction({
   );
 }
 
+// サイドバーのコンテンツコンポーネント
 function SidebarGroupContent({
   className,
   ...props
@@ -451,6 +466,7 @@ function SidebarGroupContent({
   );
 }
 
+// サイドバーのコンテンツコンポーネント
 function SidebarMenu({ className, ...props }: React.ComponentProps<'ul'>) {
   return (
     <ul
@@ -462,6 +478,7 @@ function SidebarMenu({ className, ...props }: React.ComponentProps<'ul'>) {
   );
 }
 
+// サイドバーのコンテンツコンポーネント
 function SidebarMenuItem({ className, ...props }: React.ComponentProps<'li'>) {
   return (
     <li
@@ -495,6 +512,7 @@ const sidebarMenuButtonVariants = cva(
   },
 );
 
+// サイドバーのコンテンツコンポーネント
 function SidebarMenuButton({
   asChild = false,
   isActive = false,
@@ -545,6 +563,7 @@ function SidebarMenuButton({
   );
 }
 
+// サイドバーのコンテンツコンポーネント
 function SidebarMenuAction({
   className,
   asChild = false,
@@ -577,6 +596,7 @@ function SidebarMenuAction({
   );
 }
 
+// サイドバーのコンテンツコンポーネント
 function SidebarMenuBadge({
   className,
   ...props
@@ -599,6 +619,7 @@ function SidebarMenuBadge({
   );
 }
 
+// サイドバーのコンテンツコンポーネント
 function SidebarMenuSkeleton({
   className,
   showIcon = false,
@@ -637,6 +658,7 @@ function SidebarMenuSkeleton({
   );
 }
 
+// サイドバーのコンテンツコンポーネント
 function SidebarMenuSub({ className, ...props }: React.ComponentProps<'ul'>) {
   return (
     <ul
@@ -652,6 +674,7 @@ function SidebarMenuSub({ className, ...props }: React.ComponentProps<'ul'>) {
   );
 }
 
+// サイドバーのコンテンツコンポーネント
 function SidebarMenuSubItem({
   className,
   ...props
@@ -666,6 +689,7 @@ function SidebarMenuSubItem({
   );
 }
 
+// サイドバーのコンテンツコンポーネント
 function SidebarMenuSubButton({
   asChild = false,
   size = 'md',

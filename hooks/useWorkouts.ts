@@ -3,7 +3,9 @@ import { supabase } from '../lib/supabase';
 import { Workout } from '../app/page';
 import { mockWorkouts as initialMockWorkouts } from '../data/mockWorkouts';
 
+// トレーニング記録を管理するカスタムフック。Supabaseからデータを取得し、状態管理とCRUD操作の関数を提供する
 export function useWorkouts() {
+  // トレーニング記録の状態。初期値は空の配列
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -13,6 +15,7 @@ export function useWorkouts() {
     fetchWorkouts();
   }, []);
 
+  // Supabaseからトレーニング記録を取得する関数。エラー処理とローディング状態の管理も行う
   const fetchWorkouts = useCallback(async () => {
     try {
       setLoading(true);
@@ -65,6 +68,7 @@ export function useWorkouts() {
     }
   }, []);
 
+  // トレーニング記録を追加する関数。Supabaseに保存し、成功したら再度データを取得して状態を更新する
   const addWorkout = async (workout: Omit<Workout, 'id'>) => {
     try {
       setLoading(true);

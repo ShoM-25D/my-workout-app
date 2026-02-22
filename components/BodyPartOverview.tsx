@@ -1,10 +1,12 @@
-import { Workout } from '../App';
+import { Workout } from '../app/page';
 import { Activity } from 'lucide-react';
 
+// 部位別トレーニング種目の概要を表示するコンポーネント
 type BodyPartOverviewProps = {
   workouts: Workout[];
 };
 
+// 部位ごとに色を定義
 const bodyPartColors: Record<string, string> = {
   胸: 'bg-red-100 text-red-700 border-red-200',
   背中: 'bg-blue-100 text-blue-700 border-blue-200',
@@ -14,10 +16,12 @@ const bodyPartColors: Record<string, string> = {
   腹筋: 'bg-pink-100 text-pink-700 border-pink-200',
 };
 
+// トレーニング記録から部位別の種目数と種目名を集計し、表示するコンポーネント
 export function BodyPartOverview({ workouts }: BodyPartOverviewProps) {
-  // Group exercises by body part
+  // 部位ごとに種目名のセットを保持するマップを作成
   const bodyPartExercises = new Map<string, Set<string>>();
 
+  // トレーニング記録をループして、部位ごとに種目名をセットに追加
   workouts.forEach((workout) => {
     workout.exercises.forEach((exercise) => {
       if (!bodyPartExercises.has(exercise.bodyPart)) {
@@ -27,6 +31,7 @@ export function BodyPartOverview({ workouts }: BodyPartOverviewProps) {
     });
   });
 
+  // 部位ごとの種目数でソートするために、マップを配列に変換してソート
   const sortedBodyParts = Array.from(bodyPartExercises.entries()).sort(
     (a, b) => b[1].size - a[1].size,
   );

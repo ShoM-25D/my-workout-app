@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { User, Workout } from '../App';
+import { User, Workout } from '../app/page';
 import {
   LogOut,
   Plus,
@@ -28,6 +28,7 @@ export function Dashboard({ user, onLogout, onViewWorkout }: DashboardProps) {
   );
 
   const handleAddWorkout = (workout: Workout) => {
+    // 新しいトレーニングをリストの先頭に追加
     setWorkouts([workout, ...workouts]);
     setIsAddModalOpen(false);
   };

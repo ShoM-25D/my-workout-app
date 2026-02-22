@@ -9,15 +9,21 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
+        // 最も目立たせたい操作
         default: 'bg-primary text-primary-foreground hover:bg-primary/90',
         destructive:
+          // 危険な操作
           'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
         outline:
+          // 少し控えめな操作
           'border bg-background text-foreground hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50',
         secondary:
+          // さらに控えめな操作
           'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost:
+          // 背景のないボタン
           'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
+        // テキストリンクのような見た目のボタン
         link: 'text-primary underline-offset-4 hover:underline',
       },
       size: {
@@ -38,6 +44,7 @@ function Button({
   className,
   variant,
   size,
+  // スタイルを保ちつつ機能はLinkコンポーネント
   asChild = false,
   ...props
 }: React.ComponentProps<'button'> &

@@ -1,17 +1,21 @@
+// クリックして開閉するユーザ依存を示す
 'use client';
 
 import * as React from 'react';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { ChevronDownIcon } from 'lucide-react';
 
+// デフォルトのスタイルとぶつからないように調整するclassNameを追加している
 import { cn } from './utils';
 
+// 全体を囲む親玉
 function Accordion({
   ...props
 }: React.ComponentProps<typeof AccordionPrimitive.Root>) {
   return <AccordionPrimitive.Root data-slot="accordion" {...props} />;
 }
 
+// 各項目の枠組み
 function AccordionItem({
   className,
   ...props
@@ -25,6 +29,7 @@ function AccordionItem({
   );
 }
 
+// クリックする見出し部分
 function AccordionTrigger({
   className,
   children,
@@ -47,6 +52,7 @@ function AccordionTrigger({
   );
 }
 
+// クリックして開く内容部分
 function AccordionContent({
   className,
   children,

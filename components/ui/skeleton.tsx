@@ -1,5 +1,6 @@
 import { cn } from './utils';
 
+// スケルトンのコンポーネント
 function Skeleton({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div

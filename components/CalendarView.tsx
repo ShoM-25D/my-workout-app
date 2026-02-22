@@ -1,26 +1,33 @@
-import { Workout } from '../App';
+import { Workout } from '../app/page';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 
+// カレンダービューコンポーネント。月ごとのカレンダーを表示し、トレーニング実施日をハイライトする
 type CalendarViewProps = {
   workouts: Workout[];
 };
 
+// カレンダービューコンポーネント。月ごとのカレンダーを表示し、トレーニング実施日をハイライトする
 export function CalendarView({ workouts }: CalendarViewProps) {
+  // 現在表示している年月を管理する状態。初期値は現在の日付
   const [currentDate, setCurrentDate] = useState(new Date());
 
+  // 現在の年月から月初と月末の日付を計算し、月初の曜日と月の日数を求める
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
+  // 月初と月末の日付を計算
   const firstDayOfMonth = new Date(year, month, 1);
   const lastDayOfMonth = new Date(year, month + 1, 0);
   const startDay = firstDayOfMonth.getDay();
   const daysInMonth = lastDayOfMonth.getDate();
 
+  // トレーニング実施日をセットにして保持。toDateString()で年月日だけの文字列に変換して比較しやすくする
   const workoutDates = new Set(
     workouts.map((w) => new Date(w.date).toDateString()),
   );
 
+  // カレンダーに表示する日付の配列を作成。月初の曜日分だけnullを先頭に追加し、その後に1から月の日数までの数字を追加する
   const days = [];
   for (let i = 0; i < startDay; i++) {
     days.push(null);
@@ -29,10 +36,12 @@ export function CalendarView({ workouts }: CalendarViewProps) {
     days.push(day);
   }
 
+  // 前の月に移動するハンドラー。currentDateを月初の1日に設定することで、月が変わるとカレンダーが更新される
   const handlePreviousMonth = () => {
     setCurrentDate(new Date(year, month - 1, 1));
   };
 
+  // 次の月に移動するハンドラー。currentDateを月初の1日に設定することで、月が変わるとカレンダーが更新される
   const handleNextMonth = () => {
     setCurrentDate(new Date(year, month + 1, 1));
   };

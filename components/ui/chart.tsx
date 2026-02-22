@@ -5,7 +5,7 @@ import * as RechartsPrimitive from 'recharts';
 
 import { cn } from './utils';
 
-// Format: { THEME_NAME: CSS_SELECTOR }
+// ダークモード対応
 const THEMES = { light: '', dark: '.dark' } as const;
 
 export type ChartConfig = {
@@ -34,6 +34,7 @@ function useChart() {
   return context;
 }
 
+// グラフ全体を包む箱
 function ChartContainer({
   id,
   className,
@@ -104,6 +105,7 @@ ${colorConfig
 
 const ChartTooltip = RechartsPrimitive.Tooltip;
 
+// グラフをマウスに乗せたときに出るやつ
 function ChartTooltipContent({
   active,
   payload,
@@ -118,14 +120,20 @@ function ChartTooltipContent({
   color,
   nameKey,
   labelKey,
-}: React.ComponentProps<typeof RechartsPrimitive.Tooltip> &
-  React.ComponentProps<'div'> & {
-    hideLabel?: boolean;
-    hideIndicator?: boolean;
-    indicator?: 'line' | 'dot' | 'dashed';
-    nameKey?: string;
-    labelKey?: string;
-  }) {
+}: React.ComponentProps<'div'> & {
+  hideLabel?: boolean;
+  hideIndicator?: boolean;
+  indicator?: 'line' | 'dot' | 'dashed';
+  nameKey?: string;
+  labelKey?: string;
+  label?: any;
+  active?: boolean;
+  payload?: any;
+  labelFormatter?: any;
+  labelClassName?: string;
+  formatter?: any;
+  color?: string;
+}) {
   const { config } = useChart();
 
   const tooltipLabel = React.useMemo(() => {
@@ -179,7 +187,7 @@ function ChartTooltipContent({
     >
       {!nestLabel ? tooltipLabel : null}
       <div className="grid gap-1.5">
-        {payload.map((item, index) => {
+        {payload.map((item: any, index: number) => {
           const key = `${nameKey || item.name || item.dataKey || 'value'}`;
           const itemConfig = getPayloadConfigFromPayload(config, item, key);
           const indicatorColor = color || item.payload.fill || item.color;
@@ -253,11 +261,12 @@ function ChartLegendContent({
   payload,
   verticalAlign = 'bottom',
   nameKey,
-}: React.ComponentProps<'div'> &
-  Pick<RechartsPrimitive.LegendProps, 'payload' | 'verticalAlign'> & {
-    hideIcon?: boolean;
-    nameKey?: string;
-  }) {
+}: React.ComponentProps<'div'> & {
+  hideIcon?: boolean;
+  nameKey?: string;
+  payload?: Array<{ value: string; color: string; dataKey: string }>;
+  verticalAlign?: RechartsPrimitive.LegendProps['verticalAlign'];
+}) {
   const { config } = useChart();
 
   if (!payload?.length) {

@@ -1,14 +1,17 @@
-import { Workout } from '../App';
+import { Workout } from '../app/page';
 import { Trophy } from 'lucide-react';
 
+// 種目別の最高重量を表示するコンポーネント
 type PersonalRecordsProps = {
   workouts: Workout[];
 };
 
+// トレーニング記録から種目別の最高重量を計算し、上位5件を表示するコンポーネント
 export function PersonalRecords({ workouts }: PersonalRecordsProps) {
-  // Calculate personal records for each exercise
+  // 種目名をキー、最高重量とその日付を値とするマップを作成
   const records = new Map<string, { weight: number; date: string }>();
 
+  // トレーニング記録をループして、種目ごとに最高重量を更新していく
   workouts.forEach((workout) => {
     workout.exercises.forEach((exercise) => {
       exercise.sets.forEach((set) => {
@@ -23,6 +26,7 @@ export function PersonalRecords({ workouts }: PersonalRecordsProps) {
     });
   });
 
+  // マップを配列に変換して、重量の降順でソートし、上位5件を取得
   const sortedRecords = Array.from(records.entries())
     .sort((a, b) => b[1].weight - a[1].weight)
     .slice(0, 5);

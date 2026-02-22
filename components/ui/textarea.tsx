@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { cn } from './utils';
 
+// テキストエリアのコンポーネント
 function Textarea({ className, ...props }: React.ComponentProps<'textarea'>) {
   return (
     <textarea

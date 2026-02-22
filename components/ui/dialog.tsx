@@ -6,30 +6,35 @@ import { XIcon } from 'lucide-react';
 
 import { cn } from './utils';
 
+// ダイアログのルートコンポーネント
 function Dialog({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Root>) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />;
 }
 
+// ダイアログをトリガーする要素
 function DialogTrigger({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Trigger>) {
   return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />;
 }
 
+// ダイアログの内容を表示するためのポータル
 function DialogPortal({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Portal>) {
   return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />;
 }
 
+// ダイアログを閉じるための要素
 function DialogClose({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Close>) {
   return <DialogPrimitive.Close data-slot="dialog-close" {...props} />;
 }
 
+// ダイアログのオーバーレイを定義するコンポーネント
 function DialogOverlay({
   className,
   ...props
@@ -46,6 +51,7 @@ function DialogOverlay({
   );
 }
 
+// ダイアログの内容を定義するコンポーネント
 function DialogContent({
   className,
   children,
@@ -72,6 +78,7 @@ function DialogContent({
   );
 }
 
+// サブメニューの内容を表示するコンポーネント
 function DialogHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -82,6 +89,7 @@ function DialogHeader({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+// サブメニューの内容を表示するコンポーネント
 function DialogFooter({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -95,6 +103,7 @@ function DialogFooter({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+// ダイアログのタイトルを定義するコンポーネント
 function DialogTitle({
   className,
   ...props
@@ -108,6 +117,7 @@ function DialogTitle({
   );
 }
 
+// ダイアログの説明を定義するコンポーネント
 function DialogDescription({
   className,
   ...props

@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Dumbbell } from 'lucide-react';
 
+// typeは、オブジェクトの構造を定義するためのTypeScriptの機能
 type LoginPageProps = {
+  // voidは返り値なしの関数を表す型
   onLogin: (email: string, password: string) => void;
 };
 
@@ -9,6 +11,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  // React.FormEventは、フォームの送信イベントを表す型
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (email && password) {

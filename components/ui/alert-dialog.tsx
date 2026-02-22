@@ -6,12 +6,14 @@ import * as AlertDialogPrimitive from '@radix-ui/react-alert-dialog';
 import { cn } from './utils';
 import { buttonVariants } from './button';
 
+// ダイアログの本体
 function AlertDialog({
   ...props
 }: React.ComponentProps<typeof AlertDialogPrimitive.Root>) {
   return <AlertDialogPrimitive.Root data-slot="alert-dialog" {...props} />;
 }
 
+// ダイアログのトリガー
 function AlertDialogTrigger({
   ...props
 }: React.ComponentProps<typeof AlertDialogPrimitive.Trigger>) {
@@ -19,7 +21,7 @@ function AlertDialogTrigger({
     <AlertDialogPrimitive.Trigger data-slot="alert-dialog-trigger" {...props} />
   );
 }
-
+// ダイアログのポータル（コードのどこにも影響を与えないようにするためのコンテナ）
 function AlertDialogPortal({
   ...props
 }: React.ComponentProps<typeof AlertDialogPrimitive.Portal>) {
@@ -28,6 +30,7 @@ function AlertDialogPortal({
   );
 }
 
+// ダイアログを開いたときに背景を黒くする
 function AlertDialogOverlay({
   className,
   ...props
@@ -44,6 +47,7 @@ function AlertDialogOverlay({
   );
 }
 
+// ダイアログを中心に表示する
 function AlertDialogContent({
   className,
   ...props
@@ -63,6 +67,7 @@ function AlertDialogContent({
   );
 }
 
+// ダイアログのヘッダー
 function AlertDialogHeader({
   className,
   ...props
@@ -76,6 +81,7 @@ function AlertDialogHeader({
   );
 }
 
+// ダイアログのフッター
 function AlertDialogFooter({
   className,
   ...props
@@ -92,6 +98,7 @@ function AlertDialogFooter({
   );
 }
 
+// ダイアログのタイトル
 function AlertDialogTitle({
   className,
   ...props
@@ -105,6 +112,7 @@ function AlertDialogTitle({
   );
 }
 
+// ダイアログの説明文
 function AlertDialogDescription({
   className,
   ...props
@@ -118,6 +126,7 @@ function AlertDialogDescription({
   );
 }
 
+// ダイアログの実行ボタン　（削除する）
 function AlertDialogAction({
   className,
   ...props
@@ -130,6 +139,7 @@ function AlertDialogAction({
   );
 }
 
+// ダイアログのキャンセルボタン　（キャンセルする）
 function AlertDialogCancel({
   className,
   ...props
