@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { LoginPage } from '../components/LoginPage';
 import { Dashboard } from '../components/Dashboard';
 import { WorkoutDetail } from '../components/WorkoutDetail';
+import { mockWorkouts } from '@/data/mockWorkouts';
 
 // ログインユーザの情報
 export type User = {
@@ -74,6 +75,7 @@ function App() {
       {currentView === 'dashboard' && currentUser && (
         <Dashboard
           user={currentUser}
+          workouts={mockWorkouts}
           onLogout={handleLogout}
           onViewWorkout={handleViewWorkoutDetail}
         />

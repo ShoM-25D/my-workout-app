@@ -12,16 +12,20 @@ import { BodyPartOverview } from './BodyPartOverview';
 import { AddWorkoutModal } from './AddWorkoutModal';
 import { ProgressChart } from './ProgressChart';
 import { CalendarView } from './CalendarView';
-import { mockWorkouts } from '../data/mockWorkouts';
 
 type DashboardProps = {
   user: User;
+  workouts: Workout[];
   onLogout: () => void;
   onViewWorkout: (workout: Workout) => void;
 };
 
-export function Dashboard({ user, onLogout, onViewWorkout }: DashboardProps) {
-  const [workouts, setWorkouts] = useState<Workout[]>(mockWorkouts);
+export function Dashboard({
+  user,
+  workouts,
+  onLogout,
+  onViewWorkout,
+}: DashboardProps) {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'list' | 'stats' | 'calendar'>(
     'list',
@@ -29,7 +33,6 @@ export function Dashboard({ user, onLogout, onViewWorkout }: DashboardProps) {
 
   const handleAddWorkout = (workout: Workout) => {
     // 新しいトレーニングをリストの先頭に追加
-    setWorkouts([workout, ...workouts]);
     setIsAddModalOpen(false);
   };
 
