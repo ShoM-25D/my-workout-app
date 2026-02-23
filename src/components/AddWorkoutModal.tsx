@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { X, Plus, Trash2 } from 'lucide-react';
-import { Workout, Exercise } from '../app/page';
+import { Workout, Exercise } from '../src/app/page';
 
 type AddWorkoutModalProps = {
   onClose: () => void;

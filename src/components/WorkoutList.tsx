@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Workout } from '../app/page';
+import { Workout } from '../src/app/page';
 import { ChevronLeft, ChevronRight, Calendar, Clock } from 'lucide-react';
 
 // トレーニング記録のリストを表示するコンポーネント。日付、時間、種目ごとのセット内容を一覧で表示し、クリックで詳細に遷移できるようにする

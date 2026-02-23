@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useWorkouts } from '@/hooks/useWorkouts';
-import { Dashboard } from '@/components/Dashboard';
+import { Dashboard } from '@/src/components_2/Dashboard';
 import { mockWorkouts } from '@/data/mockWorkouts';
 
 export default function DashboardPage() {

@@ -8,10 +8,10 @@ import {
 } from 'lucide-react';
 import { WorkoutList } from './WorkoutList';
 import { PersonalRecords } from './PersonalRecords';
-import { BodyPartOverview } from './BodyPartOverview';
-import { AddWorkoutModal } from './AddWorkoutModal';
+import { BodyPartOverview } from '../../components/BodyPartOverview';
+import { AddWorkoutModal } from '../../components/AddWorkoutModal';
 import { ProgressChart } from './ProgressChart';
-import { CalendarView } from './CalendarView';
+import { CalendarView } from '../../components/CalendarView';
 
 type DashboardProps = {
   user: User;

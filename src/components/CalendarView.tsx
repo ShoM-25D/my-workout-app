@@ -1,4 +1,4 @@
-import { Workout } from '../app/page';
+import { Workout } from '../src/app/page';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 

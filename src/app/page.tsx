@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { LoginPage } from '../components/LoginPage';
-import { Dashboard } from '../components/Dashboard';
-import { WorkoutDetail } from '../components/WorkoutDetail';
+import { LoginPage } from '../components_2/LoginPage';
+import { Dashboard } from '../components_2/Dashboard';
+import { WorkoutDetail } from '../components_2/WorkoutDetail';
 import { mockWorkouts } from '@/data/mockWorkouts';
 
 // ログインユーザの情報

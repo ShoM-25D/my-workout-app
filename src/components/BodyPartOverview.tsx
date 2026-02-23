@@ -1,4 +1,4 @@
-import { Workout } from '../app/page';
+import { Workout } from '../src/app/page';
 import { Activity } from 'lucide-react';
 
 // 部位別トレーニング種目の概要を表示するコンポーネント

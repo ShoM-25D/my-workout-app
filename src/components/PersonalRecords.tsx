@@ -1,4 +1,4 @@
-import { Workout } from '../app/page';
+import { Workout } from '../src/app/page';
 import { Trophy } from 'lucide-react';
 
 // 種目別の最高重量を表示するコンポーネント
