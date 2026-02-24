@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
-import { Workout } from '../src/app/page';
-import { mockWorkouts as initialMockWorkouts } from '../data/mockWorkouts';
+import { Workout } from '@/mocks/mockWorkouts';
+import { mockWorkouts as initialMockWorkouts } from '@/mocks/mockWorkouts';
 
 // トレーニング記録を管理するカスタムフック。Supabaseからデータを取得し、状態管理とCRUD操作の関数を提供する
 export function useWorkouts() {

@@ -1,4 +1,4 @@
-import { Workout } from '../app/page';
+import { Workout } from '@/mocks/mockWorkouts';
 import { ArrowLeft, Calendar, Clock, Weight, Activity } from 'lucide-react';
 
 // トレーニング記録の詳細を表示するコンポーネント

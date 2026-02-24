@@ -1,4 +1,4 @@
-import { Workout } from '../app/page';
+import { Workout } from '@/mocks/mockWorkouts';
 import {
   LineChart,
   Line,
