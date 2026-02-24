@@ -1,37 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import { LoginPage } from '../components/LoginPage';
-import { Dashboard } from '../components/Dashboard';
-import { WorkoutDetail } from '../components/WorkoutDetail';
-import { mockWorkouts } from '@/data/mockWorkouts';
+import { LoginPage } from '@/components/LoginPage';
+import { Dashboard } from '@/components/Dashboard';
+import { WorkoutDetail } from '@/components/WorkoutDetail';
+import { mockWorkouts, type Workout } from '@/mocks/mockWorkouts';
 
 // ログインユーザの情報
 export type User = {
   id: string;
   name: string;
   email: string;
-};
-// トレーニング種目
-export type Exercise = {
-  id: string;
-  name: string;
-  sets: {
-    weight: number;
-    reps: number;
-  }[];
-  bodyPart: string;
-};
-
-// トレーニングの記録
-export type Workout = {
-  id: string;
-  date: string;
-  duration: number;
-  exercises: Exercise[];
-  notes?: string;
-  bodyWeight?: number;
-  bodyFat?: number;
 };
 
 // アプリの表示状態

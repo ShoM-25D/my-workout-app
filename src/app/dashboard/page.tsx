@@ -1,13 +1,13 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useWorkouts } from '@/hooks/useWorkouts';
 import { Dashboard } from '@/components/Dashboard';
-import { mockWorkouts } from '@/data/mockWorkouts';
+import { mockWorkouts } from '@/mocks/mockWorkouts';
 
 export default function DashboardPage() {
-  const { workouts, loading } = useWorkouts();
   const router = useRouter();
+
+  const loading = false; // データの取得状況を管理する状態（例: useStateで管理）
 
   const currentUser = {
     id: '1',

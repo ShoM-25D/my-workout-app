@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { User, Workout } from '../app/page';
+import { User } from '@/app/page';
+import { Workout } from '@/mocks/mockWorkouts';
 import {
   LogOut,
   Plus,
@@ -8,10 +9,10 @@ import {
 } from 'lucide-react';
 import { WorkoutList } from './WorkoutList';
 import { PersonalRecords } from './PersonalRecords';
-import { BodyPartOverview } from './BodyPartOverview';
-import { AddWorkoutModal } from './AddWorkoutModal';
+import { BodyPartOverview } from '@/components/BodyPartOverview';
+import { AddWorkoutModal } from '@/components/AddWorkoutModal';
 import { ProgressChart } from './ProgressChart';
-import { CalendarView } from './CalendarView';
+import { CalendarView } from '@/components/CalendarView';
 
 type DashboardProps = {
   user: User;
