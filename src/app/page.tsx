@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { LoginPage } from '@/components/LoginPage';
 import { Dashboard } from '@/components/Dashboard';
 import { WorkoutDetail } from '@/components/WorkoutDetail';
-import { mockWorkouts, type Workout } from '@/mocks/mockWorkouts';
+import { Workout } from '@/types/database';
+import { supabase } from '../../lib/supabase';
 
 // ログインユーザの情報
 export type User = {
@@ -22,19 +23,51 @@ function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(null);
 
-  // ユーザのログイン情報、画面の状態を管理 - handle系
-  const handleLogin = (email: string, password: string) => {
-    // Mock login - 本番環境では認証情報を検証します
-    setCurrentUser({
-      id: '1',
-      name: 'トレーニー',
-      email: email,
-    });
-    setCurrentView('dashboard');
+  // ワークアウトデータ - 今後はSupabaseから取得予定
+  const [workouts, setWorkouts] = useState<Workout[]>([]);
+
+  useEffect(() => {
+    if (currentUser) {
+      fetchWorkouts();
+    }
+  }, [currentUser]);
+
+  const fetchWorkouts = async () => {
+    const { data, error } = await supabase.from('workouts').select('*');
+
+    if (error) {
+      console.error('データ取得失敗:', error);
+    } else {
+      setWorkouts(data as any);
+    }
   };
 
-  const handleLogout = () => {
+  // ユーザのログイン情報、画面の状態を管理 - handle系
+  const handleLogin = async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      alert('ログイン失敗：' + error.message);
+      return;
+    }
+
+    if (data.user) {
+      setCurrentUser({
+        id: data.user.id,
+        name: data.user.email?.split('@')[0] || 'トレーニー',
+        email: data.user.email || '',
+      });
+      setCurrentView('dashboard');
+    }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     setCurrentUser(null);
+    setWorkouts([]);
     setCurrentView('login');
   };
 
@@ -54,7 +87,7 @@ function App() {
       {currentView === 'dashboard' && currentUser && (
         <Dashboard
           user={currentUser}
-          workouts={mockWorkouts}
+          workouts={workouts}
           onLogout={handleLogout}
           onViewWorkout={handleViewWorkoutDetail}
         />
