@@ -1,4 +1,4 @@
-import { Workout } from '@/mocks/mockWorkouts';
+import { Workout } from '@/types/database';
 import { Trophy } from 'lucide-react';
 
 // 種目別の最高重量を表示するコンポーネント
@@ -12,8 +12,8 @@ export function PersonalRecords({ workouts }: PersonalRecordsProps) {
   const records = new Map<string, { weight: number; date: string }>();
 
   // トレーニング記録をループして、種目ごとに最高重量を更新していく
-  workouts.forEach((workout) => {
-    workout.exercises.forEach((exercise) => {
+  workouts?.forEach((workout) => {
+    workout.exercises?.forEach((exercise) => {
       exercise.sets.forEach((set) => {
         const current = records.get(exercise.name);
         if (!current || set.weight > current.weight) {

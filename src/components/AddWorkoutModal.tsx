@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { X, Plus, Trash2 } from 'lucide-react';
-import { Workout, Exercise } from '@/mocks/mockWorkouts';
+import { Workout, Exercise } from '@/types/database';
+import { supabase } from '../../lib/supabase';
 
 type AddWorkoutModalProps = {
   onClose: () => void;
@@ -121,21 +122,53 @@ export function AddWorkoutModal({ onClose, onAdd }: AddWorkoutModalProps) {
   };
 
   // フォームの送信処理。入力されたデータをまとめて新しいトレーニング記録オブジェクトを作成し、onAddコールバックに渡す
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // 新しいトレーニング記録オブジェクトを作成
-    const workout: Workout = {
-      id: Date.now().toString(),
-      date: date,
-      duration: duration,
-      exercises: exercises,
-      notes: notes || undefined,
-      bodyWeight: bodyWeight ? parseFloat(bodyWeight) : undefined,
-      bodyFat: bodyFat ? parseFloat(bodyFat) : undefined,
-    };
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        alert('ログインが必要です');
+        return;
+      }
 
-    onAdd(workout);
+      for (const ex of exercises) {
+        for (const set of ex.sets) {
+          const { error } = await supabase.from('workout_logs').insert([
+            {
+              user_id: user.id,
+              weight: set.weight,
+              reps: set.reps,
+              exercise_name: ex.name,
+              body_part: ex.bodyPart,
+              created_at: date,
+            },
+          ]);
+          if (error) throw error;
+        }
+      }
+      // 新しいトレーニング記録オブジェクトを作成
+      const workout: Workout = {
+        id: Date.now().toString(),
+        date: date,
+        duration: duration,
+        exercises: exercises,
+        notes: notes || undefined,
+        bodyWeight: bodyWeight ? parseFloat(bodyWeight) : undefined,
+        bodyFat: bodyFat ? parseFloat(bodyFat) : undefined,
+      };
+
+      alert('保存に成功しました！');
+      onAdd(workout);
+      onClose();
+    } catch (error: any) {
+      console.error('保存に失敗しました:', error);
+      alert(
+        `保存に失敗しました: ${error.message || '不明なエラー'}\n${error.details || ''}`,
+      );
+    }
   };
 
   return (

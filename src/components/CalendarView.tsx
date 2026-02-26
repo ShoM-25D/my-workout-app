@@ -1,6 +1,6 @@
-import { Workout } from '@/mocks/mockWorkouts';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
+import { Workout } from '@/types/database';
 
 // カレンダービューコンポーネント。月ごとのカレンダーを表示し、トレーニング実施日をハイライトする
 type CalendarViewProps = {

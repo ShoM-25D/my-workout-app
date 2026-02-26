@@ -1,4 +1,4 @@
-import { Workout } from '@/mocks/mockWorkouts';
+import { Workout } from '@/types/database';
 import { Activity } from 'lucide-react';
 
 // 部位別トレーニング種目の概要を表示するコンポーネント
@@ -22,8 +22,8 @@ export function BodyPartOverview({ workouts }: BodyPartOverviewProps) {
   const bodyPartExercises = new Map<string, Set<string>>();
 
   // トレーニング記録をループして、部位ごとに種目名をセットに追加
-  workouts.forEach((workout) => {
-    workout.exercises.forEach((exercise) => {
+  workouts?.forEach((workout) => {
+    workout.exercises?.forEach((exercise) => {
       if (!bodyPartExercises.has(exercise.bodyPart)) {
         bodyPartExercises.set(exercise.bodyPart, new Set());
       }

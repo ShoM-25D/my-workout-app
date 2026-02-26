@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { User } from '@/app/page';
-import { Workout } from '@/mocks/mockWorkouts';
 import {
   LogOut,
   Plus,
@@ -13,6 +12,8 @@ import { BodyPartOverview } from '@/components/BodyPartOverview';
 import { AddWorkoutModal } from '@/components/AddWorkoutModal';
 import { ProgressChart } from './ProgressChart';
 import { CalendarView } from '@/components/CalendarView';
+import { Workout } from '@/types/database';
+import { supabase } from '../../lib/supabase';
 
 type DashboardProps = {
   user: User;
@@ -23,14 +24,30 @@ type DashboardProps = {
 
 export function Dashboard({
   user,
-  workouts,
+  workouts: initialWorkouts,
   onLogout,
   onViewWorkout,
 }: DashboardProps) {
+  const [workouts, setWorkouts] = useState<Workout[]>(initialWorkouts); // 最初の状態は空っぽ
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'list' | 'stats' | 'calendar'>(
     'list',
   );
+
+  useEffect(() => {
+    const fetchMyData = async () => {
+      const { data, error } = await supabase.from('workout_logs').select(`
+        *,
+        exercises ( name, target_muscle )
+        `);
+
+      if (data) {
+        setWorkouts(data as any);
+      }
+    };
+
+    fetchMyData();
+  }, []);
 
   const handleAddWorkout = (workout: Workout) => {
     // 新しいトレーニングをリストの先頭に追加

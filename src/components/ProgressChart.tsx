@@ -1,4 +1,4 @@
-import { Workout } from '@/mocks/mockWorkouts';
+import { Workout } from '@/types/database';
 import {
   LineChart,
   Line,
@@ -20,16 +20,16 @@ type ProgressChartProps = {
 export function ProgressChart({ workouts }: ProgressChartProps) {
   // トレーニング記録から種目名のセットを作成
   const exercises = new Set<string>();
-  workouts.forEach((workout) => {
-    workout.exercises.forEach((exercise) => {
+  workouts?.forEach((workout) => {
+    workout.exercises?.forEach((exercise) => {
       exercises.add(exercise.name);
     });
   });
 
   // 種目ごとの頻度を計算して、上位3種目を抽出
   const exerciseFrequency = new Map<string, number>();
-  workouts.forEach((workout) => {
-    workout.exercises.forEach((exercise) => {
+  workouts?.forEach((workout) => {
+    workout.exercises?.forEach((exercise) => {
       exerciseFrequency.set(
         exercise.name,
         (exerciseFrequency.get(exercise.name) || 0) + 1,

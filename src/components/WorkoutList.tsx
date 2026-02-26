@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Workout } from '@/mocks/mockWorkouts';
+import { Workout } from '@/types/database';
 import { ChevronLeft, ChevronRight, Calendar, Clock } from 'lucide-react';
 
 // トレーニング記録のリストを表示するコンポーネント。日付、時間、種目ごとのセット内容を一覧で表示し、クリックで詳細に遷移できるようにする
@@ -54,7 +54,7 @@ export function WorkoutList({ workouts, onViewWorkout }: WorkoutListProps) {
             </div>
 
             <div className="space-y-2">
-              {workout.exercises.map((exercise) => (
+              {workout.exercises?.map((exercise) => (
                 <div
                   key={exercise.id}
                   className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded"
