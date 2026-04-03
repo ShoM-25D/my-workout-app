@@ -1,0 +1,20 @@
+# Dependency directories (これらが10000件の原因)
+node_modules/
+.next/
+out/
+build/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+ENV/
+
+# Databases
+*.db
+*.sqlite3
+
+# OS files
+.DS_Store
+Thumbs.db

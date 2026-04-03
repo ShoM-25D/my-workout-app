@@ -1,0 +1,69 @@
+from sqlalchemy import create_engine, Column, String, Integer, Float, Boolean, ForeignKey, DateTime
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, relationship
+from datetime import datetime, timezone
+
+# SQLiteのデータベースファイルを作成
+engine = create_engine("sqlite:///workouts.db")
+Base = declarative_base()
+
+class User(Base):
+  __tablename__ = "users"
+  id = Column(Integer, primary_key=True, autoincrement=True)
+  name = Column(String, nullable=False)
+  email = Column(String, unique=True, nullable=False)
+  password_hash = Column(String, nullable=False)
+  created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+  workouts = relationship("Workout", back_populates="user")
+
+class Exercise(Base):
+  __tablename__ = "exercises"
+  id = Column(Integer, primary_key=True, autoincrement=True)
+  name = Column(String, nullable=False)
+  target_muscle = Column(String)
+  description = Column(String)
+  created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+class Workout(Base):
+  __tablename__ = "workouts"
+  id = Column(Integer, primary_key=True, autoincrement=True)
+  user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+  date = Column(String, nullable=False)
+  duration = Column(Integer)
+  notes = Column(String)
+  body_weight = Column(Float)
+  body_fat = Column(Float)
+  created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+  user = relationship("User", back_populates="workouts")
+  workout_exercises = relationship("WorkoutExercise", back_populates="workout")
+
+class WorkoutExercise(Base):
+  __tablename__ = "workout_exercises"
+  id = Column(Integer, primary_key=True, autoincrement=True)
+  workout_id = Column(Integer, ForeignKey("workouts.id"), nullable=False)
+  exercise_id = Column(Integer, ForeignKey("exercises.id"), nullable=False)
+  order = Column(Integer)
+  created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+  workout = relationship("Workout", back_populates="workout_exercises")
+  exercise = relationship("Exercise")
+  sets = relationship("Set", back_populates="workout_exercise")
+
+class Set(Base):
+  __tablename__ = "sets"
+  id = Column(Integer, primary_key=True, autoincrement=True)
+  workout_exercise_id = Column(Integer, ForeignKey("workout_exercises.id"), nullable=False)
+  set_number = Column(Integer, nullable=False)
+  weight = Column(Float)
+  reps = Column(Integer)
+  is_superset = Column(Boolean, default=False)
+  superset_exercise_id = Column(Integer, ForeignKey("exercises.id"), nullable=True)
+  superset_weight = Column(Float, nullable=True)
+  superset_reps = Column(Integer, nullable=True)
+  created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+  workout_exercise = relationship("WorkoutExercise", back_populates="sets")
+
+# テーブルを作成
+Base.metadata.create_all(engine)
+
+# DBとのセッションを管理
+SessionLocal = sessionmaker(bind=engine)
