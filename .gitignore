@@ -18,3 +18,14 @@ ENV/
 # OS files
 .DS_Store
 Thumbs.db
+
+# 環境変数
+.env
+.env.local
+.env.production
+
+# ログ
+*.log
+
+# Alembic
+backend/alembic/versions/*.pyc

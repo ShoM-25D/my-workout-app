@@ -2,11 +2,15 @@ from sqlalchemy import create_engine, Column, String, Integer, Float, Boolean, F
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from datetime import datetime, timezone
+import os
+from dotenv import load_dotenv
+from pathlib import Path
+from dotenv import load_dotenv
 
-# SQLiteのデータベースファイルを作成
-engine = create_engine("sqlite:///workouts.db")
+load_dotenv(Path(__file__).parent.parent / ".env")
+DATABASE_URL = os.getenv("DATABASE_URL")
+engine = create_engine(DATABASE_URL)
 Base = declarative_base()
-
 class User(Base):
   __tablename__ = "users"
   id = Column(Integer, primary_key=True, autoincrement=True)

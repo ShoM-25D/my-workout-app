@@ -1,12 +1,16 @@
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timezone, timedelta
+from pathlib import Path
+from dotenv import load_dotenv
+import os
 
+load_dotenv(Path(__file__).parent.parent / ".env")
 # パスワードのハッシュ化設定
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # JWTの設定
-SECRET_KEY = "your-secret-key-here" # 後で環境変数に移動する
+SECRET_KEY = os.getenv("SECRET_KEY") # 後で環境変数に移動する
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
