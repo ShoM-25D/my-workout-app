@@ -82,7 +82,7 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             rust-service/target
-          key: ${{ runner.os }}-cargo-${{ hashFiles("rust-service/Cargo.lock") }}
+          key: ${{ runner.os }}-cargo-${{ hashFiles('rust-service/Cargo.lock') }}
 
       - name: Build
         run: |
