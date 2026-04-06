@@ -29,3 +29,6 @@ Thumbs.db
 
 # Alembic
 backend/alembic/versions/*.pyc
+
+# Rust
+rust-service/target/

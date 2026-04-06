@@ -15,7 +15,7 @@ services:
     build: ./backend
     container_name: workout_backend
     environment:
-      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_URL: ${DATABASE_URL_DOCKER}
       SECRET_KEY: ${SECRET_KEY}
     ports:
       - '8000:8000'
@@ -31,6 +31,26 @@ services:
       - '3000:3000'
     depends_on:
       - backend
+
+  go-service:
+    build: ./go-service
+    container_name: workout_go
+    environment:
+      DATABASE_URL: ${DATABASE_URL_DOCKER}
+    ports:
+      - '8001:8001'
+    depends_on:
+      - db
+
+  rust-service:
+    build: ./rust-service
+    container_name: workout_rust
+    environment:
+      DATABASE_URL: ${DATABASE_URL_DOCKER}
+    ports:
+      - '8002:8002'
+    depends_on:
+      - db
 
 volumes:
   postgres_data:

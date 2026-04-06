@@ -46,3 +46,39 @@ jobs:
         run: |
           cd frontend
           npm run build
+
+  go-service:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26'
+
+      - name: Install dependencies
+        run: |
+          cd go-service
+          go mod download
+
+      - name: Build
+        run: |
+          cd go-service
+          go build ./...
+
+  rust-service:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Build
+        run: |
+          cd rust-service
+          cargo build
