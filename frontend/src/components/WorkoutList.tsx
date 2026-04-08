@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Workout } from '@/types/database';
+import { DeleteWorkoutButton } from './DeleteWorkoutButton';
 import { ChevronLeft, ChevronRight, Calendar, Clock } from 'lucide-react';
 
 // トレーニング記録のリストを表示するコンポーネント。日付、時間、種目ごとのセット内容を一覧で表示し、クリックで詳細に遷移できるようにする
@@ -40,9 +41,17 @@ export function WorkoutList({ workouts, onViewWorkout }: WorkoutListProps) {
           <div
             key={workout.id}
             onClick={() => onViewWorkout(workout)}
-            className="border border-gray-200 rounded-lg p-4 hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer"
+            className="group relative border border-gray-200 rounded-lg p-4 hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer"
           >
-            <div className="flex items-start justify-between mb-3">
+            <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+              <DeleteWorkoutButton
+                date={workout.date}
+                onSuccess={() => window.location.reload()}
+                variant="ghost"
+                className="h-8 w-8 rounded-full p-0"
+              ></DeleteWorkoutButton>
+            </div>
+            <div className="flex items-start justify-between mb-3 pr-8">
               <div className="flex items-center gap-2 text-gray-600">
                 <Calendar className="w-4 h-4" />
                 <span>{formatDate(workout.date)}</span>

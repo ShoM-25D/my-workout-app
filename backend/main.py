@@ -239,9 +239,26 @@ def get_workout_by_date(date:str, current_user:User = Depends(get_current_user),
   ).first()
 
   if not workout:
-    return None
+    raise HTTPException(status_code=404, detail=f"{date}の記録が見つかりませんでした")
 
   return {"id": str(workout.id), "date": workout.date}
+
+@app.delete("/workouts/by-date/{date}")
+def delete_workout_by_date(date: str, current_user:User = Depends(get_current_user), db:Session = Depends(get_db)):
+  query = db.query(Workout).filter(
+    Workout.date == date,
+    Workout.user_id == current_user.id
+  )
+
+  workouts = query.all()
+
+  if not workouts:
+    raise HTTPException(status_code=404, detail=f"{date}の記録が見つかりませんでした")
+
+  query.delete(synchronize_session=False)
+  db.commit()
+
+  return {"message": f"{date}の記録（{len(workouts)}件）をすべて削除しました。"}
 
 @app.get("/workouts/{workout_id}")
 def get_workout(workout_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
@@ -277,6 +294,8 @@ def get_workout(workout_id: int, current_user: User = Depends(get_current_user),
     "bodyFat": workout.body_fat,
     "exercises": exercises,
   }
+
+
 
 @app.post("/workouts/{workout_id}/exercises")
 def add_exercise_to_workout(workout_id: int, workout_exercise: WorkoutExerciseCreate, db: Session = Depends(get_db)):
@@ -370,6 +389,24 @@ def create_exercise(exercise: ExerciseCreate, db: Session = Depends(get_db)):
   db.refresh(new_exercise)
   return new_exercise
 
+@app.delete("/workout_exercise/{workout_exercise_id}")
+def delete_exercise_id(
+  workout_exercise_id: int,
+  current_user: User = Depends(get_current_user),
+  db: Session = Depends(get_db),
+):
+  workout_exercise = db.query(WorkoutExercise).join(Workout).filter(
+    WorkoutExercise.id == workout_exercise_id,
+    Workout.user_id == current_user.id
+  ).first()
+
+  if not workout_exercise:
+    raise HTTPException(status_code=404, detail="種目が見つかりません")
+
+  db.delete(workout_exercise)
+  db.commit()
+
+  return {"message": "削除が完了しました"}
 
 @app.post("/workout_exercise/{workout_exercise_id}/sets")
 def add_set_to_workout_exercise(workout_exercise_id: int, set_data: SetCreate, db: Session = Depends(get_db)):

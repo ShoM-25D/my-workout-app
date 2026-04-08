@@ -1,5 +1,7 @@
 import { Workout } from '@/types/database';
 import { AddExerciseModal } from './AddExerciseModal';
+import { DeleteWorkoutButton } from './DeleteWorkoutButton';
+import { Button } from './ui/button';
 import React, { useState } from 'react';
 import {
   ArrowLeft,
@@ -8,6 +10,7 @@ import {
   Weight,
   Activity,
   Plus,
+  X,
 } from 'lucide-react';
 
 // トレーニング記録の詳細を表示するコンポーネント
@@ -27,6 +30,35 @@ export function WorkoutDetail({ workout, onBack }: WorkoutDetailProps) {
       day: 'numeric',
       weekday: 'long',
     });
+  };
+
+  const handleDeleteExercise = async (exerciseId: string) => {
+    if (!window.confirm('この種目を削除しますか？')) return;
+    try {
+      const token = localStorage.getItem('access_token');
+
+      if (!token) {
+        alert('ログインセッションが切れています。再ログインして下さい');
+        return;
+      }
+
+      const response = await fetch(
+        `http://localhost:8000/workout_exercise/${exerciseId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      if (response.ok) {
+        alert('削除完了しました');
+      }
+    } catch (error) {
+      console.log('Error: ', error);
+    }
   };
 
   if (!workout) {
@@ -138,6 +170,12 @@ export function WorkoutDetail({ workout, onBack }: WorkoutDetailProps) {
               <Plus className="w-4 h-4" />
               種目を追加
             </button>
+            <DeleteWorkoutButton
+              date={workout.date}
+              onSuccess={() => window.location.reload()}
+              variant="ghost"
+              className="h-8 w-8 rounded-full p-0"
+            ></DeleteWorkoutButton>
           </div>
           <div className="space-y-6">
             {workout.exercises.map((exercise, index) => {
@@ -171,6 +209,17 @@ export function WorkoutDetail({ workout, onBack }: WorkoutDetailProps) {
                     <div className="text-right">
                       <p className="text-gray-600">最大重量</p>
                       <p className="text-indigo-600">{maxWeight}kg</p>
+                      <p>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-red-500 hover:text-red-700 hover:bg-red-50 mt-2"
+                          onClick={() => handleDeleteExercise(exercise.id)}
+                        >
+                          <X className="w-4 h-4 mr-1" />
+                          種目を削除
+                        </Button>
+                      </p>
                     </div>
                   </div>
 
