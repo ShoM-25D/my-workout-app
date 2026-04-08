@@ -44,12 +44,14 @@ export function DeleteWorkoutButton({
       );
 
       if (response.ok) {
+        alert('削除完了しました');
         onSuccess?.();
       } else {
-        alert('削除に失敗しました。');
+        const errorData = await response.json();
+        throw new Error(errorData.detail || '削除に失敗しました。');
       }
     } catch (error) {
-      alert(`エラーが発生しました: ${error}`);
+      alert(`削除失敗しました。:${error}`);
     } finally {
       setIsLoading(false);
     }

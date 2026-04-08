@@ -55,9 +55,13 @@ export function WorkoutDetail({ workout, onBack }: WorkoutDetailProps) {
 
       if (response.ok) {
         alert('削除完了しました');
+        onBack();
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || '削除に失敗しました。');
       }
     } catch (error) {
-      console.log('Error: ', error);
+      alert(`削除失敗しました。:${error}`);
     }
   };
 

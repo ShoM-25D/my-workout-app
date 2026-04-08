@@ -11,6 +11,28 @@ export default function WorkoutDetailPage() {
   const router = useRouter();
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [loading, setLoading] = useState(true);
+  const handleExerciseDeleted = (deletedExerciseId: string) => {
+    if (!window.confirm('この種目を削除しますか？')) return;
+    try {
+      const token = localStorage.getItem('access_token');
+
+      if (!token) {
+        alert('ログインセッションが切れています。再ログインして下さい');
+        return;
+      }
+
+      const response = fetchWithAuth(
+        `http://localhost:8000/workout_exercise/${deletedExerciseId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+    } catch (error) {}
+  };
 
   useEffect(() => {
     const id = params.id;
