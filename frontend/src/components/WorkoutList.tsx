@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Workout } from '@/types/database';
 import { DeleteWorkoutButton } from './DeleteWorkoutButton';
 import { ChevronLeft, ChevronRight, Calendar, Clock } from 'lucide-react';
@@ -16,6 +17,7 @@ const ITEMS_PER_PAGE = 5;
 export function WorkoutList({ workouts, onViewWorkout }: WorkoutListProps) {
   // 現在のページを管理する状態。初期値は1ページ目
   const [currentPage, setCurrentPage] = useState(1);
+  const router = useRouter();
 
   // ページネーションのために、総ページ数を計算し、現在のページに表示するトレーニング記録のスライスを作成する
   const totalPages = Math.ceil(workouts.length / ITEMS_PER_PAGE);
@@ -46,7 +48,10 @@ export function WorkoutList({ workouts, onViewWorkout }: WorkoutListProps) {
             <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
               <DeleteWorkoutButton
                 date={workout.date}
-                onSuccess={() => window.location.reload()}
+                onSuccess={() => {
+                  router.push('/dashboard');
+                  router.refresh();
+                }}
                 variant="ghost"
                 className="h-8 w-8 rounded-full p-0"
               ></DeleteWorkoutButton>

@@ -1,4 +1,5 @@
 import { Button } from './ui/button';
+import { fetchWithAuth } from '@/lib/api';
 import { Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -26,20 +27,10 @@ export function DeleteWorkoutButton({
 
     setIsLoading(true);
     try {
-      const token = localStorage.getItem('access_token');
-
-      if (!token) {
-        alert('ログインセッションが切れています。再ログインして下さい');
-        return;
-      }
-      const response = await fetch(
+      const response = await fetchWithAuth(
         `http://localhost:8000/workouts/by-date/${date}`,
         {
           method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
         },
       );
 

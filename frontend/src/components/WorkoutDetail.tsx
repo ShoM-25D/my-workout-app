@@ -2,6 +2,7 @@ import { Workout } from '@/types/database';
 import { AddExerciseModal } from './AddExerciseModal';
 import { DeleteWorkoutButton } from './DeleteWorkoutButton';
 import { Button } from './ui/button';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import {
   ArrowLeft,
@@ -17,10 +18,16 @@ import {
 type WorkoutDetailProps = {
   workout: Workout;
   onBack: () => void;
+  onExerciseDeleted: (id: string) => void;
 };
 
 // トレーニング記録の詳細を表示するコンポーネント。日付、時間、種目ごとのセット内容などを見やすく表示する
-export function WorkoutDetail({ workout, onBack }: WorkoutDetailProps) {
+export function WorkoutDetail({
+  workout,
+  onBack,
+  onExerciseDeleted,
+}: WorkoutDetailProps) {
+  const router = useRouter();
   const [isAddExerciseOpen, setIsAddExerciseOpen] = useState(false);
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -30,39 +37,6 @@ export function WorkoutDetail({ workout, onBack }: WorkoutDetailProps) {
       day: 'numeric',
       weekday: 'long',
     });
-  };
-
-  const handleDeleteExercise = async (exerciseId: string) => {
-    if (!window.confirm('この種目を削除しますか？')) return;
-    try {
-      const token = localStorage.getItem('access_token');
-
-      if (!token) {
-        alert('ログインセッションが切れています。再ログインして下さい');
-        return;
-      }
-
-      const response = await fetch(
-        `http://localhost:8000/workout_exercise/${exerciseId}`,
-        {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      if (response.ok) {
-        alert('削除完了しました');
-        onBack();
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || '削除に失敗しました。');
-      }
-    } catch (error) {
-      alert(`削除失敗しました。:${error}`);
-    }
   };
 
   if (!workout) {
@@ -176,7 +150,10 @@ export function WorkoutDetail({ workout, onBack }: WorkoutDetailProps) {
             </button>
             <DeleteWorkoutButton
               date={workout.date}
-              onSuccess={() => window.location.reload()}
+              onSuccess={() => {
+                router.push(`/workouts/${workout.id}`);
+                router.refresh();
+              }}
               variant="ghost"
               className="h-8 w-8 rounded-full p-0"
             ></DeleteWorkoutButton>
@@ -218,7 +195,7 @@ export function WorkoutDetail({ workout, onBack }: WorkoutDetailProps) {
                           variant="ghost"
                           size="sm"
                           className="text-red-500 hover:text-red-700 hover:bg-red-50 mt-2"
-                          onClick={() => handleDeleteExercise(exercise.id)}
+                          onClick={() => onExerciseDeleted(exercise.id)}
                         >
                           <X className="w-4 h-4 mr-1" />
                           種目を削除

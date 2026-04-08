@@ -11,27 +11,34 @@ export default function WorkoutDetailPage() {
   const router = useRouter();
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [loading, setLoading] = useState(true);
-  const handleExerciseDeleted = (deletedExerciseId: string) => {
+
+  const handleExerciseDeleted = async (deletedExerciseId: string) => {
     if (!window.confirm('この種目を削除しますか？')) return;
     try {
-      const token = localStorage.getItem('access_token');
-
-      if (!token) {
-        alert('ログインセッションが切れています。再ログインして下さい');
-        return;
-      }
-
-      const response = fetchWithAuth(
+      const response = await fetchWithAuth(
         `http://localhost:8000/workout_exercise/${deletedExerciseId}`,
         {
           method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
         },
       );
-    } catch (error) {}
+      if (response.ok) {
+        alert('削除が完了しました');
+        setWorkout((prev) => {
+          if (!prev) return null;
+          return {
+            ...prev,
+            workout_exercises: prev.exercises.filter(
+              (ex) => ex.id !== deletedExerciseId,
+            ),
+          };
+        });
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || '削除に失敗しました。');
+      }
+    } catch (error) {
+      alert(`削除失敗しました。:${error}`);
+    }
   };
 
   useEffect(() => {
@@ -49,6 +56,7 @@ export default function WorkoutDetailPage() {
     <WorkoutDetail
       workout={workout!}
       onBack={() => router.push('/dashboard')}
+      onExerciseDeleted={handleExerciseDeleted}
     />
   );
 }

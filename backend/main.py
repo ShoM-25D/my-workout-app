@@ -13,6 +13,7 @@ app = FastAPI()
 app.add_middleware(
   CORSMiddleware,
   allow_origins=["http://localhost:3000"],
+  allow_credentials=True,
   allow_methods=["*"],
   allow_headers=["*"],
 )
@@ -245,18 +246,28 @@ def get_workout_by_date(date:str, current_user:User = Depends(get_current_user),
 
 @app.delete("/workouts/by-date/{date}")
 def delete_workout_by_date(date: str, current_user:User = Depends(get_current_user), db:Session = Depends(get_db)):
-  query = db.query(Workout).filter(
+  workouts = db.query(Workout).filter(
     Workout.date == date,
     Workout.user_id == current_user.id
-  )
+  ).all()
 
-  workouts = query.all()
 
   if not workouts:
     raise HTTPException(status_code=404, detail=f"{date}の記録が見つかりませんでした")
 
-  query.delete(synchronize_session=False)
-  db.commit()
+  workout_ids = [w.id for w in workouts]
+  try:
+    db.query(Set).filter(Set.workout_exercise_id.in_(
+      db.query(WorkoutExercise.id).filter(WorkoutExercise.workout_id.in_(workout_ids))
+    )).delete(synchronize_session=False)
+    db.query(WorkoutExercise).filter(WorkoutExercise.workout_id.in_(workout_ids)).delete(synchronize_session=False)
+    db.query(Workout).filter(Workout.id.in_(workout_ids)).delete(synchronize_session=False)
+    db.commit()
+
+  except Exception as e:
+    db.rollback()
+    print(f"Delete Error: {e}")
+    raise HTTPException(status_code=500, detail="削除中にエラーが発生しました")
 
   return {"message": f"{date}の記録（{len(workouts)}件）をすべて削除しました。"}
 
@@ -403,8 +414,14 @@ def delete_exercise_id(
   if not workout_exercise:
     raise HTTPException(status_code=404, detail="種目が見つかりません")
 
-  db.delete(workout_exercise)
-  db.commit()
+  try:
+    db.query(Set).filter(Set.workout_exercise_id == workout_exercise_id).delete(synchronize_session=False)
+    db.delete(workout_exercise)
+    db.commit()
+
+  except Exception as e:
+    db.rollback()
+    raise HTTPException(status_code=500, detail="削除に失敗しました")
 
   return {"message": "削除が完了しました"}
 
@@ -437,6 +454,7 @@ def get_personal_records(current_user: User = Depends(get_current_user),db: Sess
     func.max(Set.weight).label("max_weight"),
     ).join(WorkoutExercise, WorkoutExercise.exercise_id == Exercise.id
     ).join(Set, Set.workout_exercise_id== WorkoutExercise.id
+    ).join(Workout, Workout.id == WorkoutExercise.workout_id
     ).filter(Workout.user_id == current_user.id
     ).group_by(Exercise.name
     ).order_by(func.max(Set.weight
