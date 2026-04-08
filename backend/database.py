@@ -9,14 +9,18 @@ from dotenv import load_dotenv
 
 load_dotenv(Path(__file__).parent.parent / ".env")
 DATABASE_URL = os.getenv("DATABASE_URL")
+# データベースへの接続の起点を作成
 engine = create_engine(DATABASE_URL)
+# Baseを継承したクラスがDBのテーブルとして扱えるようにする
 Base = declarative_base()
+
 class User(Base):
   __tablename__ = "users"
   id = Column(Integer, primary_key=True, autoincrement=True)
   name = Column(String, nullable=False)
   email = Column(String, unique=True, nullable=False)
   password_hash = Column(String, nullable=False)
+  # 自動的に時間を記録
   created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
   workouts = relationship("Workout", back_populates="user")
 
@@ -46,7 +50,7 @@ class WorkoutExercise(Base):
   id = Column(Integer, primary_key=True, autoincrement=True)
   workout_id = Column(Integer, ForeignKey("workouts.id"), nullable=False)
   exercise_id = Column(Integer, ForeignKey("exercises.id"), nullable=False)
-  order = Column(Integer)
+  order = Column(Integer)  # 種目の順番
   created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
   workout = relationship("Workout", back_populates="workout_exercises")
   exercise = relationship("Exercise")

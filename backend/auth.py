@@ -5,14 +5,17 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os
 
+# .envに記載した環境変数を定義
 load_dotenv(Path(__file__).parent.parent / ".env")
-# パスワードのハッシュ化設定
+
+# bcryptを使用する
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# JWTの設定
-SECRET_KEY = os.getenv("SECRET_KEY") # 後で環境変数に移動する
+# JWTの生成（トークンを発行）
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
 
 def hash_password(password: str) -> str:
   return pwd_context.hash(password)

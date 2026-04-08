@@ -8,17 +8,21 @@ from database import SessionLocal, User, Exercise, Workout, WorkoutExercise, Set
 from auth import hash_password, verify_password, create_access_token, decode_access_token
 from datetime import datetime, timezone, timedelta
 
+# サーバー立ち上げ
 app = FastAPI()
-
 app.add_middleware(
   CORSMiddleware,
   allow_origins=["http://localhost:3000"],
   allow_methods=["*"],
   allow_headers=["*"],
 )
+# データモデルの定義
 class SetInput(BaseModel):
   weight: float
   reps: int
+  is_superset: bool = False
+  superset_weight: float | None = None
+  superset_reps: int | None = None
 
 class ExerciseInput(BaseModel):
   name: str
@@ -60,6 +64,8 @@ class SetCreate(BaseModel):
   superset_weight: float | None = None
   superset_reps: int | None = None
 
+class AddExercisesToWorkout(BaseModel):
+  exercises: list[ExerciseInput]
 
 # DBセッションを取得する関数
 def get_db():
@@ -132,7 +138,14 @@ def get_workouts(current_user: User = Depends(get_current_user),db: Session = De
         "id": str(we.id),
         "name": we.exercise.name,
         "bodyPart": we.exercise.target_muscle,
-        "sets":[{"weight": s.weight, "reps": s.reps} for s in we.sets],
+        "sets":[
+          {
+            "weight": s.weight,
+            "reps": s.reps,
+            "isSuperset": s.is_superset,
+            "supersetWeight": s.superset_weight,
+            "supersetReps": s.superset_reps,
+          } for s in we.sets],
       })
     result.append({
       "id":str(workout.id),
@@ -157,6 +170,7 @@ def create_workout(workout: WorkoutCreate, current_user: User = Depends(get_curr
     body_fat=workout.body_fat,
   )
   db.add(new_workout)
+  # 一時保存
   db.flush()
 
   exercises_out = []
@@ -187,6 +201,9 @@ def create_workout(workout: WorkoutCreate, current_user: User = Depends(get_curr
         set_number=set_number,
         weight=set_input.weight,
         reps=set_input.reps,
+        is_superset=set_input.is_superset,
+        superset_weight= set_input.superset_weight,
+        superset_reps=set_input.superset_reps
       )
       db.add(new_set)
 
@@ -194,9 +211,16 @@ def create_workout(workout: WorkoutCreate, current_user: User = Depends(get_curr
       "id" : str(workout_exercise.id),
       "name":exercise.name,
       "bodyPart":exercise_input.body_part,
-      "sets": [{"weight": s.weight, "reps": s.reps} for s in exercise_input.sets],
+      "sets": [{
+            "weight": s.weight,
+            "reps": s.reps,
+            "isSuperset": s.is_superset,
+            "supersetWeight": s.superset_weight,
+            "supersetReps": s.superset_reps
+          } for s in exercise_input.sets],
     })
 
+  # 完全保存
   db.commit()
   return {
     "id": str(new_workout.id),
@@ -206,6 +230,18 @@ def create_workout(workout: WorkoutCreate, current_user: User = Depends(get_curr
     "bodyWeight":new_workout.body_weight,
     "bodyFat": new_workout.body_fat,
     "exercises": exercises_out,}
+
+@app.get("/workouts/by-date/{date}")
+def get_workout_by_date(date:str, current_user:User = Depends(get_current_user), db: Session = Depends(get_db)):
+  workout = db.query(Workout).filter(
+    Workout.date == date,
+    Workout.user_id == current_user.id
+  ).first()
+
+  if not workout:
+    return None
+
+  return {"id": str(workout.id), "date": workout.date}
 
 @app.get("/workouts/{workout_id}")
 def get_workout(workout_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
@@ -223,7 +259,13 @@ def get_workout(workout_id: int, current_user: User = Depends(get_current_user),
       "id": str(we.id),
       "name": we.exercise.name,
       "bodyPart":we.exercise.target_muscle,
-      "sets":[{"weight": s.weight, "reps": s.reps} for s in we.sets],
+      "sets":[{
+            "weight": s.weight,
+            "reps": s.reps,
+            "isSuperset": s.is_superset,
+            "supersetWeight": s.superset_weight,
+            "supersetReps": s.superset_reps,
+          } for s in we.sets],
     })
 
   return {
@@ -235,22 +277,6 @@ def get_workout(workout_id: int, current_user: User = Depends(get_current_user),
     "bodyFat": workout.body_fat,
     "exercises": exercises,
   }
-
-@app.get("/exercises")
-def get_exercises(db: Session = Depends(get_db)):
-  return db.query(Exercise).all()
-
-@app.post("/exercises")
-def create_exercise(exercise: ExerciseCreate, db: Session = Depends(get_db)):
-  new_exercise = Exercise(
-    name=exercise.name,
-    target_muscle=exercise.target_muscle,
-    description=exercise.description,
-  )
-  db.add(new_exercise)
-  db.commit()
-  db.refresh(new_exercise)
-  return new_exercise
 
 @app.post("/workouts/{workout_id}/exercises")
 def add_exercise_to_workout(workout_id: int, workout_exercise: WorkoutExerciseCreate, db: Session = Depends(get_db)):
@@ -273,6 +299,77 @@ def add_exercise_to_workout(workout_id: int, workout_exercise: WorkoutExerciseCr
   db.commit()
   db.refresh(new_workout_exercise)
   return new_workout_exercise
+
+@app.post("/workouts/{workout_id}/add-exercises")
+def add_exercises_to_workout(
+  workout_id: int,
+  data: AddExercisesToWorkout,
+  current_user: User = Depends(get_current_user),
+  db: Session = Depends(get_db)
+):
+  workout = db.query(Workout).filter(
+    Workout.id == workout_id,
+    Workout.user_id == current_user.id
+  ).first()
+
+  if not workout:
+    raise HTTPException(status_code=404, detail="ワークアウトが見つかりません")
+
+  max_order = db.query(func.max(WorkoutExercise.order)).filter(
+    WorkoutExercise.workout_id == workout_id
+  ).scalar() or 0
+
+  for order, exercise_input in enumerate(data.exercises, max_order + 1):
+    exercise = db.query(Exercise).filter(Exercise.name == exercise_input.name).first()
+    if not exercise:
+      exercise = Exercise(
+        name=exercise_input.name,
+        target_muscle=exercise_input.body_part,
+        description=""
+      )
+      db.add(exercise)
+      db.flush()
+
+    workout_exercise = WorkoutExercise(
+      workout_id=workout_id,
+      exercise_id=exercise.id,
+      order=order,
+    )
+
+    db.add(workout_exercise)
+    db.flush()
+
+    for set_number, set_input in enumerate(exercise_input.sets, 1):
+      new_set = Set(
+        workout_exercise_id=workout_exercise.id,
+        set_number=set_number,
+        weight=set_input.weight,
+        reps=set_input.reps,
+        is_superset=set_input.is_superset,
+        superset_weight=set_input.superset_weight,
+        superset_reps=set_input.superset_reps,
+      )
+      db.add(new_set)
+
+  db.commit()
+  return {"message": "種目を追加しました"}
+
+@app.get("/exercises")
+def get_exercises(db: Session = Depends(get_db)):
+  return db.query(Exercise).all()
+
+@app.post("/exercises")
+def create_exercise(exercise: ExerciseCreate, db: Session = Depends(get_db)):
+  new_exercise = Exercise(
+    name=exercise.name,
+    target_muscle=exercise.target_muscle,
+    description=exercise.description,
+  )
+  db.add(new_exercise)
+  db.commit()
+  db.refresh(new_exercise)
+  return new_exercise
+
 
 @app.post("/workout_exercise/{workout_exercise_id}/sets")
 def add_set_to_workout_exercise(workout_exercise_id: int, set_data: SetCreate, db: Session = Depends(get_db)):

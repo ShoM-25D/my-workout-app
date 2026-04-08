@@ -1,5 +1,14 @@
 import { Workout } from '@/types/database';
-import { ArrowLeft, Calendar, Clock, Weight, Activity } from 'lucide-react';
+import { AddExerciseModal } from './AddExerciseModal';
+import React, { useState } from 'react';
+import {
+  ArrowLeft,
+  Calendar,
+  Clock,
+  Weight,
+  Activity,
+  Plus,
+} from 'lucide-react';
 
 // トレーニング記録の詳細を表示するコンポーネント
 type WorkoutDetailProps = {
@@ -9,7 +18,7 @@ type WorkoutDetailProps = {
 
 // トレーニング記録の詳細を表示するコンポーネント。日付、時間、種目ごとのセット内容などを見やすく表示する
 export function WorkoutDetail({ workout, onBack }: WorkoutDetailProps) {
-  // 日付を日本語表記にフォーマットする関数。toLocaleDateStringを使って年月日と曜日を表示する
+  const [isAddExerciseOpen, setIsAddExerciseOpen] = useState(false);
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('ja-JP', {
@@ -120,7 +129,16 @@ export function WorkoutDetail({ workout, onBack }: WorkoutDetailProps) {
 
         {/* Exercises */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
-          <h2 className="text-gray-900 mb-6">実施種目</h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-gray-900 mb-6">実施種目</h2>
+            <button
+              onClick={() => setIsAddExerciseOpen(true)}
+              className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
+            >
+              <Plus className="w-4 h-4" />
+              種目を追加
+            </button>
+          </div>
           <div className="space-y-6">
             {workout.exercises.map((exercise, index) => {
               const maxWeight = Math.max(...exercise.sets.map((s) => s.weight));
@@ -177,23 +195,50 @@ export function WorkoutDetail({ workout, onBack }: WorkoutDetailProps) {
                       </thead>
                       <tbody>
                         {exercise.sets.map((set, setIndex) => (
-                          <tr
-                            key={setIndex}
-                            className="border-b border-gray-100"
-                          >
-                            <td className="py-3 px-4 text-gray-700">
-                              {setIndex + 1}
-                            </td>
-                            <td className="text-right py-3 px-4 text-gray-900">
-                              {set.weight}kg
-                            </td>
-                            <td className="text-right py-3 px-4 text-gray-900">
-                              {set.reps}回
-                            </td>
-                            <td className="text-right py-3 px-4 text-gray-700">
-                              {(set.weight * set.reps).toLocaleString()}kg
-                            </td>
-                          </tr>
+                          <React.Fragment key={setIndex}>
+                            <tr
+                              key={setIndex}
+                              className="border-b border-gray-100"
+                            >
+                              <td className="py-3 px-4 text-gray-700">
+                                {setIndex + 1}
+                              </td>
+                              <td className="text-right py-3 px-4 text-gray-900">
+                                {set.weight}kg
+                              </td>
+                              <td className="text-right py-3 px-4 text-gray-900">
+                                {set.reps}回
+                              </td>
+                              <td className="text-right py-3 px-4 text-gray-700">
+                                {(set.weight * set.reps).toLocaleString()}kg
+                              </td>
+                            </tr>
+
+                            {/* スーパーセット行 */}
+                            {set.isSuperset && (
+                              <tr
+                                key={`${setIndex}-ss`}
+                                className="border-b border-indigo-100 bg-indigo-50"
+                              >
+                                <td className="py-2 px-4 text-indigo-600 text-sm">
+                                  SS
+                                </td>
+                                <td className="text-right py-2 px-4 text-indigo-600 text-sm">
+                                  {set.supersetWeight}kg
+                                </td>
+                                <td className="text-right py-2 px-4 text-indigo-600 text-sm">
+                                  {set.supersetReps}回
+                                </td>
+                                <td className="text-right py-2 px-4 text-indigo-600 text-sm">
+                                  {(
+                                    (set.supersetWeight ?? 0) *
+                                    (set.supersetReps ?? 0)
+                                  ).toLocaleString()}
+                                  kg
+                                </td>
+                              </tr>
+                            )}
+                          </React.Fragment>
                         ))}
                       </tbody>
                       <tfoot>
@@ -224,6 +269,18 @@ export function WorkoutDetail({ workout, onBack }: WorkoutDetailProps) {
             <h2 className="text-gray-900 mb-4">メモ</h2>
             <p className="text-gray-700 whitespace-pre-wrap">{workout.notes}</p>
           </div>
+        )}
+
+        {/* モーダルの表示 */}
+        {isAddExerciseOpen && (
+          <AddExerciseModal
+            workoutId={workout.id}
+            onClose={() => setIsAddExerciseOpen(false)}
+            onAdd={() => {
+              setIsAddExerciseOpen(false);
+              window.location.reload();
+            }}
+          />
         )}
       </div>
     </div>

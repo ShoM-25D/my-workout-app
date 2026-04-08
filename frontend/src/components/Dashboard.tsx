@@ -165,6 +165,7 @@ export function Dashboard({
         <AddWorkoutModal
           onClose={() => setIsAddModalOpen(false)}
           onAdd={handleAddWorkout}
+          onExistingWorkout={(id) => onViewWorkout({ id } as Workout)}
         />
       )}
     </div>

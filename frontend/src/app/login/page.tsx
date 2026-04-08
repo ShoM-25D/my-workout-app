@@ -11,6 +11,7 @@ export default function LoginPageContainer() {
     const response = await fetch('http://localhost:8000/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      // 直列化（シリアライズ）
       body: JSON.stringify({ email, password }),
     });
 
