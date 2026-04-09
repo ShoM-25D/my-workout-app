@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Workout } from '@/types/database';
 import { WorkoutDetail } from '@/components/WorkoutDetail';
-import { fetchWithAuth } from '@/lib/api';
+import { fetchWithAuth, API_BASE_URL } from '@/lib/api';
 
 export default function WorkoutDetailPage() {
   const params = useParams();
@@ -16,7 +16,7 @@ export default function WorkoutDetailPage() {
     if (!window.confirm('この種目を削除しますか？')) return;
     try {
       const response = await fetchWithAuth(
-        `http://localhost:8000/workout_exercise/${deletedExerciseId}`,
+        `${API_BASE_URL}/workout_exercise/${deletedExerciseId}`,
         {
           method: 'DELETE',
         },
@@ -27,12 +27,9 @@ export default function WorkoutDetailPage() {
         );
         if (updatedExercises.length === 0) {
           if (window.confirm('この日のメモも削除しますか')) {
-            await fetchWithAuth(
-              `http://localhost:8000/workouts/${workout!.id}`,
-              {
-                method: 'DELETE',
-              },
-            );
+            await fetchWithAuth(`${API_BASE_URL}/workouts/${workout!.id}`, {
+              method: 'DELETE',
+            });
           }
           router.push('/dashboard');
           return;
@@ -46,7 +43,7 @@ export default function WorkoutDetailPage() {
 
   useEffect(() => {
     const id = params.id;
-    fetchWithAuth(`http://localhost:8000/workouts/${id}`)
+    fetchWithAuth(`${API_BASE_URL}/workouts/${id}`)
       .then((r) => r.json())
       .then((data) => setWorkout(data))
       .catch((err) => console.error(err))

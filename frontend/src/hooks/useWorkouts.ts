@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { fetchWithAuth } from '@/lib/api';
+import { fetchWithAuth, API_BASE_URL } from '@/lib/api';
 import { Workout } from '@/types/database';
 import { mockWorkouts as initialMockWorkouts } from '@/mocks/mockWorkouts';
 
@@ -17,12 +17,7 @@ export function useWorkouts() {
       setLoading(true);
       setError(null);
 
-      const response = await fetchWithAuth('http://localhost:8000/workouts');
-
-      if (!response.ok) {
-        throw new Error(`HTTPエラー: ${response.status}`);
-      }
-
+      const response = await fetchWithAuth(`${API_BASE_URL}/workouts`);
       const data: Workout[] = await response.json();
       setWorkouts(data);
     } catch (err: any) {
@@ -38,7 +33,7 @@ export function useWorkouts() {
     try {
       setLoading(true);
 
-      const response = await fetchWithAuth('http://localhost:8000/workouts', {
+      const response = await fetchWithAuth(`${API_BASE_URL}/workouts`, {
         method: 'POST',
         body: JSON.stringify({
           date: workout.date,
@@ -78,7 +73,7 @@ export function useWorkouts() {
       setLoading(true);
 
       const response = await fetchWithAuth(
-        `http://localhost:8000/workouts/by-date/${date}`,
+        `${API_BASE_URL}/workouts/by-date/${date}`,
         {
           method: 'DELETE',
         },

@@ -1,4 +1,5 @@
 import { Workout } from '@/types/database';
+import { useState } from 'react';
 import {
   LineChart,
   Line,
@@ -19,12 +20,8 @@ type ProgressChartProps = {
 // トレーニング記録から種目ごとの重量推移を計算し、LineChartで表示するコンポーネント
 export function ProgressChart({ workouts }: ProgressChartProps) {
   // トレーニング記録から種目名のセットを作成
-  const exercises = new Set<string>();
-  workouts?.forEach((workout) => {
-    workout.exercises?.forEach((exercise) => {
-      exercises.add(exercise.name);
-    });
-  });
+  const [activeTab, setActiveTab] = useState<string>('胸');
+  const bodyParts = ['胸', '背中', '脚', '肩', '腕', '腹筋'];
 
   // 種目ごとの頻度を計算して、上位3種目を抽出
   const exerciseFrequency = new Map<string, number>();
@@ -39,6 +36,14 @@ export function ProgressChart({ workouts }: ProgressChartProps) {
 
   // 頻度の高い上位3種目を抽出
   const topExercises = Array.from(exerciseFrequency.entries())
+    .filter(([name]) => {
+      return workouts.some((workout) =>
+        workout.exercises.some(
+          (exercise) =>
+            exercise.name === name && exercise.bodyPart === activeTab,
+        ),
+      );
+    })
     .sort((a, b) => b[1] - a[1])
     .slice(0, 3)
     .map(([name]) => name);
@@ -84,6 +89,17 @@ export function ProgressChart({ workouts }: ProgressChartProps) {
         <h2 className="text-gray-900">重量推移</h2>
       </div>
 
+      <div className="flex gap-2 mb-4 border-b border-gray-200">
+        {bodyParts.map((part) => (
+          <button
+            key={part}
+            onClick={() => setActiveTab(part)}
+            className={`px-3 pb-2 border-b-2 transition-colors ${activeTab === part ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-600 hover:text-gray-900'}`}
+          >
+            {part}
+          </button>
+        ))}
+      </div>
       {chartData.length > 0 ? (
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={chartData}>

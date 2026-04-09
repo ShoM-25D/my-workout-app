@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { fetchWithAuth } from '@/lib/api';
+import { fetchWithAuth, API_BASE_URL } from '@/lib/api';
 
 export type PersonalRecord = {
   exercise_name: string;
@@ -19,12 +19,12 @@ export function useStats() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchWithAuth('http://localhost:8000/stats/personal_records')
+    fetchWithAuth(`${API_BASE_URL}/stats/personal_records`)
       .then((r) => r.json())
       .then((data) => setPersonalRecords(data))
       .catch((err) => console.error(err));
 
-    fetchWithAuth('http://localhost:8000/stats/frequency')
+    fetchWithAuth(`${API_BASE_URL}/stats/frequency`)
       .then((r) => r.json())
       .then((data) => setFrequency(data[0]))
       .catch((err) => console.error(err))

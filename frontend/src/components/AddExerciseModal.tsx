@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { X, Plus, Trash2 } from 'lucide-react';
 import { Exercise } from '@/types/database';
-import { fetchWithAuth } from '@/lib/api';
+import { fetchWithAuth, API_BASE_URL } from '@/lib/api';
 
 type AddExerciseModalProps = {
   workoutId: string;
@@ -47,7 +47,7 @@ export function AddExerciseModal({
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    fetchWithAuth('http://localhost:8000/exercises')
+    fetchWithAuth(`${API_BASE_URL}/exercises`)
       .then((r) => r.json())
       .then((data) => setApiExercises(data))
       .catch(() => {});
@@ -111,8 +111,8 @@ export function AddExerciseModal({
     e.preventDefault();
     setIsSaving(true);
     try {
-      const response = await fetchWithAuth(
-        `http://localhost:8000/workouts/${workoutId}/add-exercises`,
+      await fetchWithAuth(
+        `${API_BASE_URL}/workouts/${workoutId}/add-exercises`,
         {
           method: 'POST',
           body: JSON.stringify({
@@ -124,10 +124,6 @@ export function AddExerciseModal({
           }),
         },
       );
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || '保存に失敗しました。');
-      }
 
       onAdd();
       onClose();

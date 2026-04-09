@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { X, Plus, Trash2 } from 'lucide-react';
 import { Workout, Exercise } from '@/types/database';
-import { fetchWithAuth } from '@/lib/api';
+import { fetchWithAuth, API_BASE_URL } from '@/lib/api';
 
 type AddWorkoutModalProps = {
   onClose: () => void;
@@ -40,7 +40,7 @@ export function AddWorkoutModal({
   >([]);
 
   useEffect(() => {
-    fetchWithAuth('http://localhost:8000/exercises')
+    fetchWithAuth(`${API_BASE_URL}/exercises`)
       .then((r) => r.json())
       .then((data) => setApiExercises(data))
       .catch(() => {});
@@ -71,7 +71,7 @@ export function AddWorkoutModal({
     if (!date) return;
     setExistingWorkout(null);
 
-    fetchWithAuth(`http://localhost:8000/workouts/by-date/${date}`)
+    fetchWithAuth(`${API_BASE_URL}/workouts/by-date/${date}`)
       .then((r) => r.json())
       .then((data) => {
         if (data && data.id) {
@@ -186,17 +186,13 @@ export function AddWorkoutModal({
       }));
 
       if (addMode === 'existing' && existingWorkout) {
-        const response = await fetchWithAuth(
-          `http://localhost:8000/workouts/${existingWorkout.id}/add-exercises`,
+        await fetchWithAuth(
+          `${API_BASE_URL}/workouts/${existingWorkout.id}/add-exercises`,
           {
             method: 'POST',
             body: JSON.stringify({ exercises: exercisesData }),
           },
         );
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.detail || '保存に失敗しました。');
-        }
         onClose();
         return;
       }
@@ -211,16 +207,10 @@ export function AddWorkoutModal({
         exercises: exercisesData,
       };
 
-      const response = await fetchWithAuth('http://localhost:8000/workouts', {
+      const response = await fetchWithAuth(`${API_BASE_URL}/workouts`, {
         method: 'POST',
         body: JSON.stringify(workoutData),
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || '保存に失敗しました。');
-      }
-
       const savedWorkout = await response.json();
 
       alert('保存に成功しました！');
