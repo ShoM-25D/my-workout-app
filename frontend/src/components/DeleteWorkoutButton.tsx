@@ -1,6 +1,7 @@
 import { Button } from './ui/button';
 import { Trash2 } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 type DeleteWorkoutButtonProps = {
   date: string;
@@ -31,7 +32,7 @@ export function DeleteWorkoutButton({
       await onDelete(date);
       onSuccess?.();
     } catch (error) {
-      alert(`削除失敗しました。:${error}`);
+      toast.error(`削除失敗しました。:${error}`);
     } finally {
       setIsLoading(false);
     }

@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { LoginPage } from '@/components/LoginPage';
 import { API_BASE_URL } from '@/lib/api';
+import { toast } from 'sonner';
 
 export default function LoginPageContainer() {
   const router = useRouter();
@@ -28,7 +29,7 @@ export default function LoginPageContainer() {
       router.push('/dashboard');
     } catch (error) {
       const message = error instanceof Error ? error.message : '不明なエラー';
-      alert(message);
+      toast.error(message);
     }
   };
 

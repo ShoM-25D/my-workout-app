@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
+import { Toaster } from '@/components/ui/sonner';
 import './globals.css';
 
 // Google Fontsの設定
@@ -33,6 +34,7 @@ export default function RootLayout({
       >
         {/* Page.tsxの場所 */}
         {children}
+        <Toaster />
       </body>
     </html>
   );

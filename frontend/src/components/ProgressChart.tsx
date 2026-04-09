@@ -11,6 +11,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { TrendingUp } from 'lucide-react';
+import { bodyParts } from '@/lib/constants';
 
 // トレーニングの重量推移を表示するコンポーネント
 type ProgressChartProps = {
@@ -21,7 +22,6 @@ type ProgressChartProps = {
 export function ProgressChart({ workouts }: ProgressChartProps) {
   // トレーニング記録から種目名のセットを作成
   const [activeTab, setActiveTab] = useState<string>('胸');
-  const bodyParts = ['胸', '背中', '脚', '肩', '腕', '腹筋'];
 
   // 種目ごとの頻度を計算して、上位3種目を抽出
   const exerciseFrequency = new Map<string, number>();

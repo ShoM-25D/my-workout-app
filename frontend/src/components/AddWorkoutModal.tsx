@@ -2,31 +2,13 @@ import { useEffect, useState } from 'react';
 import { X, Plus, Trash2 } from 'lucide-react';
 import { Workout, Exercise } from '@/types/database';
 import { fetchWithAuth, API_BASE_URL } from '@/lib/api';
+import { bodyParts, commonExercises } from '@/lib/constants';
+import { toast } from 'sonner';
 
 type AddWorkoutModalProps = {
   onClose: () => void;
   onAdd: (workout: Workout) => void;
   onExistingWorkout: (workoutId: string) => void;
-};
-
-const bodyParts = ['胸', '背中', '脚', '肩', '腕', '腹筋'];
-const commonExercises: Record<string, string[]> = {
-  胸: [
-    'ベンチプレス',
-    'ダンベルプレス',
-    'インクラインプレス',
-    'チェストフライ',
-  ],
-  背中: ['デッドリフト', 'ラットプルダウン', 'ベントオーバーロー', '懸垂'],
-  脚: ['スクワット', 'レッグプレス', 'レッグカール', 'レッグエクステンション'],
-  肩: ['ショルダープレス', 'サイドレイズ', 'フロントレイズ', 'リアレイズ'],
-  腕: [
-    'バーベルカール',
-    'トライセプスエクステンション',
-    'ハンマーカール',
-    'ディップス',
-  ],
-  腹筋: ['クランチ', 'レッグレイズ', 'プランク', 'アブローラー'],
 };
 
 // トレーニング記録を追加するモーダルコンポーネント
@@ -213,13 +195,13 @@ export function AddWorkoutModal({
       });
       const savedWorkout = await response.json();
 
-      alert('保存に成功しました！');
+      toast.success('保存に成功しました！');
       onAdd(savedWorkout);
       onClose();
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : '不明なエラー';
       console.error('保存に失敗しました:', message);
-      alert(`保存に失敗しました: ${message}`);
+      toast.error(`保存に失敗しました: ${message}`);
     }
   };
 

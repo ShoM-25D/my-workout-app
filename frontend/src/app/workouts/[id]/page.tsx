@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { Workout } from '@/types/database';
 import { WorkoutDetail } from '@/components/WorkoutDetail';
 import { fetchWithAuth, API_BASE_URL } from '@/lib/api';
+import { toast } from 'sonner';
 
 export default function WorkoutDetailPage() {
   const params = useParams();
@@ -37,7 +38,7 @@ export default function WorkoutDetailPage() {
         setWorkout({ ...workout!, exercises: updatedExercises });
       }
     } catch (error) {
-      alert(`削除失敗しました。:${error}`);
+      toast.error(`削除失敗しました。:${error}`);
     }
   };
 
