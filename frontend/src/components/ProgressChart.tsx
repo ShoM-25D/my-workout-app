@@ -18,6 +18,11 @@ type ProgressChartProps = {
   workouts: Workout[];
 };
 
+type DataPoint = {
+  date: string;
+  [key: string]: string | number;
+};
+
 // トレーニング記録から種目ごとの重量推移を計算し、LineChartで表示するコンポーネント
 export function ProgressChart({ workouts }: ProgressChartProps) {
   // トレーニング記録から種目名のセットを作成
@@ -54,7 +59,7 @@ export function ProgressChart({ workouts }: ProgressChartProps) {
     .reverse()
     .slice(-10) // Last 10 workouts
     .map((workout) => {
-      const dataPoint: any = {
+      const dataPoint: DataPoint = {
         date: new Date(workout.date).toLocaleDateString('ja-JP', {
           month: 'short',
           day: 'numeric',

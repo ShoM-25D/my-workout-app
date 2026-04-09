@@ -2,6 +2,15 @@ import { Button } from './ui/button';
 import { Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from './ui/alert-dialog';
 
 type DeleteWorkoutButtonProps = {
   date: string;
@@ -20,13 +29,10 @@ export function DeleteWorkoutButton({
   className,
   children,
 }: DeleteWorkoutButtonProps) {
+  const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleDelete = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-
-    if (!window.confirm(`${date}の記録を全て削除しますか`)) return;
-
+  const handleDelete = async () => {
     setIsLoading(true);
     try {
       await onDelete(date);
@@ -35,17 +41,34 @@ export function DeleteWorkoutButton({
       toast.error(`削除失敗しました。:${error}`);
     } finally {
       setIsLoading(false);
+      setIsOpen(false);
     }
   };
 
   return (
-    <Button
-      variant={variant}
-      className={className}
-      onClick={handleDelete}
-      disabled={isLoading}
-    >
-      {isLoading ? '削除中...' : children || <Trash2 className="w-4 h-4" />}
-    </Button>
+    <>
+      <Button
+        variant={variant}
+        className={className}
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsOpen(true);
+        }}
+        disabled={isLoading}
+      >
+        {isLoading ? '削除中...' : children || <Trash2 className="w-4 h-4" />}
+      </Button>
+      <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{date}の記録を全て削除しますか</AlertDialogTitle>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>キャンセル</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>削除</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }

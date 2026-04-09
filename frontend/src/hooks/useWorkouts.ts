@@ -98,6 +98,34 @@ export function useWorkouts() {
     }
   };
 
+  const deleteExercise = async (exerciseId: string) => {
+    try {
+      await fetchWithAuth(`${API_BASE_URL}/workout_exercise/${exerciseId}`, {
+        method: 'DELETE',
+      });
+    } catch (err: any) {
+      console.error('Error adding workout:', err);
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteWorkoutById = async (workoutId: string) => {
+    try {
+      await fetchWithAuth(`${API_BASE_URL}/workouts/${workoutId}`, {
+        method: 'DELETE',
+      });
+    } catch (err: any) {
+      console.error('Error adding workout:', err);
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     workouts,
     loading,
@@ -105,5 +133,7 @@ export function useWorkouts() {
     fetchWorkouts,
     addWorkout,
     deleteWorkout,
+    deleteExercise,
+    deleteWorkoutById,
   };
 }

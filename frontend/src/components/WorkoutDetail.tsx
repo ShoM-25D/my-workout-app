@@ -308,7 +308,7 @@ export function WorkoutDetail({
             onClose={() => setIsAddExerciseOpen(false)}
             onAdd={() => {
               setIsAddExerciseOpen(false);
-              window.location.reload();
+              router.refresh();
             }}
           />
         )}
