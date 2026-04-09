@@ -1,11 +1,11 @@
 import { Button } from './ui/button';
-import { fetchWithAuth } from '@/lib/api';
 import { Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
 type DeleteWorkoutButtonProps = {
   date: string;
   onSuccess?: () => void;
+  onDelete: (date: string) => Promise<void>;
   variant?: 'default' | 'destructive' | 'outline' | 'ghost';
   className?: string;
   children?: React.ReactNode;
@@ -14,6 +14,7 @@ type DeleteWorkoutButtonProps = {
 export function DeleteWorkoutButton({
   date,
   onSuccess,
+  onDelete,
   variant = 'destructive',
   className,
   children,
@@ -27,20 +28,8 @@ export function DeleteWorkoutButton({
 
     setIsLoading(true);
     try {
-      const response = await fetchWithAuth(
-        `http://localhost:8000/workouts/by-date/${date}`,
-        {
-          method: 'DELETE',
-        },
-      );
-
-      if (response.ok) {
-        alert('削除完了しました');
-        onSuccess?.();
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || '削除に失敗しました。');
-      }
+      await onDelete(date);
+      onSuccess?.();
     } catch (error) {
       alert(`削除失敗しました。:${error}`);
     } finally {

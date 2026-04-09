@@ -73,11 +73,42 @@ export function useWorkouts() {
     }
   };
 
+  const deleteWorkout = async (date: string) => {
+    try {
+      setLoading(true);
+
+      const response = await fetchWithAuth(
+        `http://localhost:8000/workouts/by-date/${date}`,
+        {
+          method: 'DELETE',
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTPエラー: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data) {
+        await fetchWorkouts();
+        return data;
+      }
+    } catch (err: any) {
+      console.error('Error adding workout:', err);
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     workouts,
     loading,
     error,
     fetchWorkouts,
     addWorkout,
+    deleteWorkout,
   };
 }

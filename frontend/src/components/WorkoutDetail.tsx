@@ -3,6 +3,7 @@ import { AddExerciseModal } from './AddExerciseModal';
 import { DeleteWorkoutButton } from './DeleteWorkoutButton';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
+import { useWorkouts } from '@/hooks/useWorkouts';
 import React, { useState } from 'react';
 import {
   ArrowLeft,
@@ -27,8 +28,9 @@ export function WorkoutDetail({
   onBack,
   onExerciseDeleted,
 }: WorkoutDetailProps) {
-  const router = useRouter();
   const [isAddExerciseOpen, setIsAddExerciseOpen] = useState(false);
+  const router = useRouter();
+  const { deleteWorkout } = useWorkouts();
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('ja-JP', {
@@ -150,10 +152,8 @@ export function WorkoutDetail({
             </button>
             <DeleteWorkoutButton
               date={workout.date}
-              onSuccess={() => {
-                router.push(`/workouts/${workout.id}`);
-                router.refresh();
-              }}
+              onDelete={deleteWorkout}
+              onSuccess={() => router.push('/dashboard')}
               variant="ghost"
               className="h-8 w-8 rounded-full p-0"
             ></DeleteWorkoutButton>

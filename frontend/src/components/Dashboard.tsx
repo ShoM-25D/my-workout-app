@@ -19,6 +19,7 @@ import { BodyPartOverview } from '@/components/BodyPartOverview';
 type DashboardProps = {
   user: User;
   workouts: Workout[];
+  onDelete: (date: string) => Promise<void>;
   onLogout: () => void;
   onViewWorkout: (workout: Workout) => void;
   onRefresh: () => void;
@@ -27,6 +28,7 @@ type DashboardProps = {
 export function Dashboard({
   user,
   workouts,
+  onDelete,
   onLogout,
   onViewWorkout,
   onRefresh,
@@ -36,7 +38,6 @@ export function Dashboard({
     'list',
   );
   const { personalRecords, frequency, loading } = useStats();
-
   const handleAddWorkout = (workout: Workout) => {
     // 新しいトレーニングをリストの先頭に追加
     setIsAddModalOpen(false);
@@ -130,7 +131,11 @@ export function Dashboard({
 
           <div className="p-6">
             {activeTab === 'list' && (
-              <WorkoutList workouts={workouts} onViewWorkout={onViewWorkout} />
+              <WorkoutList
+                workouts={workouts}
+                onViewWorkout={onViewWorkout}
+                onDelete={onDelete}
+              />
             )}
             {activeTab === 'stats' && (
               <div className="space-y-6">

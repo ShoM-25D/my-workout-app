@@ -306,6 +306,31 @@ def get_workout(workout_id: int, current_user: User = Depends(get_current_user),
     "exercises": exercises,
   }
 
+@app.delete("/workouts/{workout_id}")
+def delete_workout_by_id(workout_id: int, current_user:User = Depends(get_current_user), db:Session = Depends(get_db)):
+  workout = db.query(Workout).filter(
+    Workout.id == workout_id,
+    Workout.user_id == current_user.id
+  ).first()
+
+  if not workout:
+    raise HTTPException(status_code=404, detail="記録が見つかりませんでした")
+
+  try:
+    db.query(Set).filter(Set.workout_exercise_id.in_(
+      db.query(WorkoutExercise.id).filter(WorkoutExercise.workout_id==workout_id)
+    )).delete(synchronize_session=False)
+    db.query(WorkoutExercise).filter(WorkoutExercise.workout_id==workout_id).delete(synchronize_session=False)
+    db.delete(workout)
+    db.commit()
+
+  except Exception as e:
+    db.rollback()
+    raise HTTPException(status_code=500, detail="削除中にエラーが発生しました")
+
+  return {"message": f"記録を削除しました。"}
+
+
 @app.post("/workouts/{workout_id}/exercises")
 def add_exercise_to_workout(workout_id: int, workout_exercise: WorkoutExerciseCreate, db: Session = Depends(get_db)):
   workout = db.query(Workout).filter(Workout.id == workout_id).first()
@@ -468,7 +493,6 @@ def get_progress(exercise_id: int, current_user: User = Depends(get_current_user
     func.max(Set.weight).label("max_weight"),
   ).join(WorkoutExercise, WorkoutExercise.workout_id == Workout.id
   ).join(Set, Set.workout_exercise_id == WorkoutExercise.id
-  ).join(Workout, Workout.id == WorkoutExercise.workout_id
   ).filter(WorkoutExercise.exercise_id == exercise_id
   ).filter(Workout.user_id == current_user.id
   ).group_by(Workout.date

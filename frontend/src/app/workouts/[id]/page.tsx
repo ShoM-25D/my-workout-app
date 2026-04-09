@@ -22,41 +22,27 @@ export default function WorkoutDetailPage() {
         },
       );
       if (response.ok) {
-        alert('削除が完了しました');
-
-        setWorkout((prev) => {
-          if (!prev) return null;
-          const updatedExercises = prev.exercises.filter(
-            (ex) => ex.id !== deletedExerciseId,
-          );
-          if (updatedExercises.length === 0) {
-            fetchWithAuth(`http://localhost:8000/workouts/${params.id}`, {
-              method: 'DELETE',
-            }).then(() => {
-              router.push('/dashboard');
-            });
-            return null;
+        const updatedExercises = workout!.exercises.filter(
+          (ex) => ex.id != deletedExerciseId,
+        );
+        if (updatedExercises.length === 0) {
+          if (window.confirm('この日のメモも削除しますか')) {
+            await fetchWithAuth(
+              `http://localhost:8000/workouts/${workout!.id}`,
+              {
+                method: 'DELETE',
+              },
+            );
           }
-          return {
-            ...prev,
-            exercises: updatedExercises,
-          };
-        });
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || '削除に失敗しました。');
+          router.push('/dashboard');
+          return;
+        }
+        setWorkout({ ...workout!, exercises: updatedExercises });
       }
     } catch (error) {
       alert(`削除失敗しました。:${error}`);
     }
   };
-  useEffect(() => {
-    if (loading || !workout) return;
-    if (workout.exercises.length == 0) {
-      alert('すべての種目が削除されました。ダッシュボードに戻ります。');
-      router.push('/dashboard');
-    }
-  }, [workout, loading, router]);
 
   useEffect(() => {
     const id = params.id;

@@ -9,7 +9,7 @@ import { useWorkouts } from '@/hooks/useWorkouts';
 export default function DashboardPage() {
   const router = useRouter();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const { workouts, loading, fetchWorkouts } = useWorkouts();
+  const { workouts, loading, fetchWorkouts, deleteWorkout } = useWorkouts();
 
   useEffect(() => {
     const name = localStorage.getItem('user_name');
@@ -42,6 +42,7 @@ export default function DashboardPage() {
     <Dashboard
       user={currentUser}
       workouts={workouts}
+      onDelete={deleteWorkout}
       onViewWorkout={(workout) => router.push(`/workouts/${workout.id}`)}
       onLogout={handleLogout}
       onRefresh={fetchWorkouts}
