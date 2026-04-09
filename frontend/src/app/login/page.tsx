@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { LoginPage } from '@/components/LoginPage';
+import { API_BASE_URL } from '@/lib/api';
 
 export default function LoginPageContainer() {
   const router = useRouter();
@@ -9,7 +10,7 @@ export default function LoginPageContainer() {
   // ユーザのログイン情報、画面の状態を管理 - handle系
   const handleLogin = async (email: string, password: string) => {
     try {
-      const response = await fetch('http://localhost:8000/auth/login', {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
