@@ -306,8 +306,6 @@ def get_workout(workout_id: int, current_user: User = Depends(get_current_user),
     "exercises": exercises,
   }
 
-
-
 @app.post("/workouts/{workout_id}/exercises")
 def add_exercise_to_workout(workout_id: int, workout_exercise: WorkoutExerciseCreate, db: Session = Depends(get_db)):
   workout = db.query(Workout).filter(Workout.id == workout_id).first()
@@ -384,22 +382,6 @@ def add_exercises_to_workout(
   db.commit()
   return {"message": "種目を追加しました"}
 
-@app.get("/exercises")
-def get_exercises(db: Session = Depends(get_db)):
-  return db.query(Exercise).all()
-
-@app.post("/exercises")
-def create_exercise(exercise: ExerciseCreate, db: Session = Depends(get_db)):
-  new_exercise = Exercise(
-    name=exercise.name,
-    target_muscle=exercise.target_muscle,
-    description=exercise.description,
-  )
-  db.add(new_exercise)
-  db.commit()
-  db.refresh(new_exercise)
-  return new_exercise
-
 @app.delete("/workout_exercise/{workout_exercise_id}")
 def delete_exercise_id(
   workout_exercise_id: int,
@@ -424,6 +406,23 @@ def delete_exercise_id(
     raise HTTPException(status_code=500, detail="削除に失敗しました")
 
   return {"message": "削除が完了しました"}
+
+@app.get("/exercises")
+def get_exercises(db: Session = Depends(get_db)):
+  return db.query(Exercise).all()
+
+@app.post("/exercises")
+def create_exercise(exercise: ExerciseCreate, db: Session = Depends(get_db)):
+  new_exercise = Exercise(
+    name=exercise.name,
+    target_muscle=exercise.target_muscle,
+    description=exercise.description,
+  )
+  db.add(new_exercise)
+  db.commit()
+  db.refresh(new_exercise)
+  return new_exercise
+
 
 @app.post("/workout_exercise/{workout_exercise_id}/sets")
 def add_set_to_workout_exercise(workout_exercise_id: int, set_data: SetCreate, db: Session = Depends(get_db)):

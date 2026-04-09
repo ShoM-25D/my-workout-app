@@ -23,13 +23,23 @@ export default function WorkoutDetailPage() {
       );
       if (response.ok) {
         alert('削除が完了しました');
+
         setWorkout((prev) => {
           if (!prev) return null;
+          const updatedExercises = prev.exercises.filter(
+            (ex) => ex.id !== deletedExerciseId,
+          );
+          if (updatedExercises.length === 0) {
+            fetchWithAuth(`http://localhost:8000/workouts/${params.id}`, {
+              method: 'DELETE',
+            }).then(() => {
+              router.push('/dashboard');
+            });
+            return null;
+          }
           return {
             ...prev,
-            workout_exercises: prev.exercises.filter(
-              (ex) => ex.id !== deletedExerciseId,
-            ),
+            exercises: updatedExercises,
           };
         });
       } else {
@@ -40,6 +50,13 @@ export default function WorkoutDetailPage() {
       alert(`削除失敗しました。:${error}`);
     }
   };
+  useEffect(() => {
+    if (loading || !workout) return;
+    if (workout.exercises.length == 0) {
+      alert('すべての種目が削除されました。ダッシュボードに戻ります。');
+      router.push('/dashboard');
+    }
+  }, [workout, loading, router]);
 
   useEffect(() => {
     const id = params.id;
