@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { X, Plus, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
+
 import { Workout, Exercise } from '@/types/database';
 import { fetchWithAuth, API_BASE_URL } from '@/lib/api';
 import { bodyParts, commonExercises } from '@/lib/constants';
-import { toast } from 'sonner';
 
 type AddWorkoutModalProps = {
   onClose: () => void;

@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter, notFound } from 'next/navigation';
+import { toast } from 'sonner';
+
 import { Workout } from '@/types/database';
 import { WorkoutDetail } from '@/components/WorkoutDetail';
 import { fetchWithAuth, API_BASE_URL } from '@/lib/api';
-import { toast } from 'sonner';
 import {
   AlertDialog,
   AlertDialogAction,

@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { Workout } from '@/types/database';
-import { DeleteWorkoutButton } from './DeleteWorkoutButton';
 import { ChevronLeft, ChevronRight, Calendar, Clock } from 'lucide-react';
+
+import { Workout } from '@/types/database';
+
+import { DeleteWorkoutButton } from './DeleteWorkoutButton';
 
 // トレーニング記録のリストを表示するコンポーネント。日付、時間、種目ごとのセット内容を一覧で表示し、クリックで詳細に遷移できるようにする
 type WorkoutListProps = {

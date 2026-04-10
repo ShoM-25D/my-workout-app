@@ -1,4 +1,5 @@
 import { Trophy } from 'lucide-react';
+
 import { PersonalRecord } from '@/hooks/useStats';
 
 // 種目別の最高重量を表示するコンポーネント

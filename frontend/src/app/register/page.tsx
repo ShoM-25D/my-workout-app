@@ -1,9 +1,10 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+
 import { RegisterPage } from '@/components/RegisterPage';
 import { API_BASE_URL } from '@/lib/api';
-import { toast } from 'sonner';
 
 export default function RegisterPageConteiner() {
   const router = useRouter();

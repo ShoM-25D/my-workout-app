@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+
 import { fetchWithAuth, API_BASE_URL } from '@/lib/api';
 import { Workout } from '@/types/database';
 import { mockWorkouts as initialMockWorkouts } from '@/mocks/mockWorkouts';

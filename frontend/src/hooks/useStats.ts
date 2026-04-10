@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+
 import { fetchWithAuth, API_BASE_URL } from '@/lib/api';
 
 export type PersonalRecord = {

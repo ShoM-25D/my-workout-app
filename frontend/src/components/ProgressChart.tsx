@@ -1,4 +1,3 @@
-import { Workout } from '@/types/database';
 import { useState } from 'react';
 import {
   LineChart,
@@ -11,6 +10,8 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { TrendingUp } from 'lucide-react';
+
+import { Workout } from '@/types/database';
 import { bodyParts } from '@/lib/constants';
 
 // トレーニングの重量推移を表示するコンポーネント

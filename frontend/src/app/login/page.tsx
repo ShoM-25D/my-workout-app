@@ -1,9 +1,10 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+
 import { LoginPage } from '@/components/LoginPage';
 import { API_BASE_URL } from '@/lib/api';
-import { toast } from 'sonner';
 
 export default function LoginPageContainer() {
   const router = useRouter();

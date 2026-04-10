@@ -2,31 +2,28 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+
 import { Dashboard } from '@/components/Dashboard';
 import { User } from '@/types/database';
 import { useWorkouts } from '@/hooks/useWorkouts';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function DashboardPage() {
   const router = useRouter();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const { workouts, loading, fetchWorkouts, deleteWorkout } = useWorkouts();
 
+  useAuth(false);
   useEffect(() => {
-    const token = localStorage.getItem('access_token');
     const id = localStorage.getItem('user_id');
     const name = localStorage.getItem('user_name');
     const email = localStorage.getItem('user_email');
     const is_admin = localStorage.getItem('is_admin') === 'true';
 
-    if (!token || !name || !email) {
-      router.push('/login');
-      return;
-    }
-
     setCurrentUser({
       id: id ?? '1',
-      name,
-      email,
+      name: name ?? '',
+      email: email ?? '',
       is_admin,
     });
   }, []);

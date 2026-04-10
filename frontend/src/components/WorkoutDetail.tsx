@@ -1,9 +1,4 @@
-import { Workout } from '@/types/database';
-import { AddExerciseModal } from './AddExerciseModal';
-import { DeleteWorkoutButton } from './DeleteWorkoutButton';
-import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
-import { useWorkouts } from '@/hooks/useWorkouts';
 import React, { useState } from 'react';
 import {
   ArrowLeft,
@@ -14,6 +9,14 @@ import {
   Plus,
   X,
 } from 'lucide-react';
+
+import { Workout } from '@/types/database';
+import { useWorkouts } from '@/hooks/useWorkouts';
+
+import { AddExerciseModal } from './AddExerciseModal';
+import { DeleteWorkoutButton } from './DeleteWorkoutButton';
+import { Button } from './ui/button';
+
 
 // トレーニング記録の詳細を表示するコンポーネント
 type WorkoutDetailProps = {

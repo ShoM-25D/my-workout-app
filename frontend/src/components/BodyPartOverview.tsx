@@ -1,5 +1,6 @@
-import { Workout } from '@/types/database';
 import { Activity } from 'lucide-react';
+
+import { Workout } from '@/types/database';
 
 // 部位別トレーニング種目の概要を表示するコンポーネント
 type BodyPartOverviewProps = {

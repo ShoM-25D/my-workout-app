@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { X, Plus, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
+
 import { Exercise } from '@/types/database';
 import { fetchWithAuth, API_BASE_URL } from '@/lib/api';
 import { bodyParts, commonExercises } from '@/lib/constants';
-import { toast } from 'sonner';
 
 type AddExerciseModalProps = {
   workoutId: string;

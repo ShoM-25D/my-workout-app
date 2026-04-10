@@ -8,14 +8,16 @@ import {
   TrendingUp,
   Calendar as CalendarIcon,
 } from 'lucide-react';
-import { WorkoutList } from './WorkoutList';
-import { ProgressChart } from './ProgressChart';
-import { PersonalRecords } from './PersonalRecords';
+
 import { useStats } from '@/hooks/useStats';
 import { User, Workout } from '@/types/database';
 import { CalendarView } from '@/components/CalendarView';
 import { AddWorkoutModal } from '@/components/AddWorkoutModal';
 import { BodyPartOverview } from '@/components/BodyPartOverview';
+
+import { PersonalRecords } from './PersonalRecords';
+import { ProgressChart } from './ProgressChart';
+import { WorkoutList } from './WorkoutList';
 
 type DashboardProps = {
   user: User;

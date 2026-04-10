@@ -1,11 +1,13 @@
 'use client';
 
-import { API_BASE_URL, fetchWithAuth } from '@/lib/api';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { bodyParts } from '@/lib/constants';
 import { ArrowLeft } from 'lucide-react';
+
+import { bodyParts } from '@/lib/constants';
+import { API_BASE_URL, fetchWithAuth } from '@/lib/api';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function AdminExercisePage() {
   const router = useRouter();
@@ -24,22 +26,8 @@ export default function AdminExercisePage() {
       .catch((err) => console.error(err));
   };
 
+  useAuth(true);
   useEffect(() => {
-    const token = localStorage.getItem('access_token');
-
-    if (!token) {
-      router.push('/login');
-      return;
-    }
-
-    const is_admin = localStorage.getItem('is_admin') === 'true';
-
-    if (!is_admin) {
-      toast.error('アクセス権限がありません');
-      router.push('/dashboard');
-      return;
-    }
-
     fetchExercises();
   }, []);
 
@@ -139,7 +127,7 @@ export default function AdminExercisePage() {
 
         <ul className="bg-white rounded-lg shadow-sm border border-gray-200 divide-y">
           {exercises
-            .filter((ex) => ex.target_muscle == activeTab)
+            .filter((ex) => ex.target_muscle === activeTab)
             .map((ex) => (
               <li key={ex.id} className="p-4 text-gray-900">
                 {ex.name}
