@@ -76,7 +76,6 @@ def get_db():
   finally:
     db.close()
 
-
 def get_current_user(authorization: Optional[str] = Header(None), db: Session = Depends(get_db)) -> User:
   if not authorization or not authorization.startswith("Bearer "):
     raise HTTPException(status_code=401, detail="認証トークンがありません")
@@ -128,7 +127,7 @@ def login(user: UserLogin, db:Session = Depends(get_db)):
     raise HTTPException(status_code=401, detail="メールアドレスまたはパスワードが正しくありません")
 
   token = create_access_token({"sub": str(db_user.id), "name" : db_user.name})
-  return {"access_token": token, "token_type": "bearer", "name": db_user.name, "email": db_user.email}
+  return {"access_token": token, "token_type": "bearer", "name": db_user.name, "email": db_user.email, "is_admin":db_user.is_admin or False}
 
 @app.get("/workouts")
 def get_workouts(current_user: User = Depends(get_current_user),db: Session = Depends(get_db)):
@@ -432,6 +431,11 @@ def get_exercises(db: Session = Depends(get_db)):
 
 @app.post("/exercises")
 def create_exercise(exercise: ExerciseCreate, current_db: User = Depends(get_admin_user), db: Session = Depends(get_db)):
+  existing_exercise = db.query(Exercise).filter(Exercise.name == exercise.name).first()
+
+  if existing_exercise:
+    raise HTTPException(status_code=400, detail="この種目は既に登録されています")
+
   new_exercise = Exercise(
     name=exercise.name,
     target_muscle=exercise.target_muscle,

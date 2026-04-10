@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   LogOut,
   Plus,
@@ -37,6 +38,7 @@ export function Dashboard({
   const [activeTab, setActiveTab] = useState<'list' | 'stats' | 'calendar'>(
     'list',
   );
+  const router = useRouter();
   const { personalRecords, frequency, loading } = useStats();
   const handleAddWorkout = (workout: Workout) => {
     // 新しいトレーニングをリストの先頭に追加
@@ -59,6 +61,11 @@ export function Dashboard({
                 <p className="text-gray-600">ようこそ、{user.name}さん</p>
               </div>
             </div>
+            {user.is_admin && (
+              <button onClick={() => router.push('/admin/exercises')}>
+                種目管理
+              </button>
+            )}
             <button
               onClick={onLogout}
               className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"

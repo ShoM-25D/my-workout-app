@@ -25,6 +25,7 @@ export default function LoginPageContainer() {
       localStorage.setItem('access_token', data.access_token);
       localStorage.setItem('user_name', data.name);
       localStorage.setItem('user_email', data.email);
+      localStorage.setItem('is_admin', String(data.is_admin ?? false));
 
       router.push('/dashboard');
     } catch (error) {

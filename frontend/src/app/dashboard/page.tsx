@@ -15,6 +15,7 @@ export default function DashboardPage() {
     const name = localStorage.getItem('user_name');
     const email = localStorage.getItem('user_email');
     const token = localStorage.getItem('access_token');
+    const is_admin = localStorage.getItem('is_admin') === 'true';
 
     if (!token || !name || !email) {
       router.push('/login');
@@ -25,6 +26,7 @@ export default function DashboardPage() {
       id: '1',
       name,
       email,
+      is_admin,
     });
   }, []);
 
@@ -32,6 +34,7 @@ export default function DashboardPage() {
     localStorage.removeItem('access_token');
     localStorage.removeItem('user_name');
     localStorage.removeItem('user_email');
+    localStorage.removeItem('is_admin');
     router.push('/login');
   };
 
