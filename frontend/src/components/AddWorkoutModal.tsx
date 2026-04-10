@@ -45,8 +45,6 @@ export function AddWorkoutModal({
   // 種目の選択とカスタム種目の入力を管理する状態
   const [selectedBodyPart, setSelectedBodyPart] = useState('胸');
   const [selectedExercise, setSelectedExercise] = useState('');
-  const [customExerciseName, setCustomExerciseName] = useState('');
-  const [isCustomExercise, setIsCustomExercise] = useState(false);
   const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
@@ -65,18 +63,11 @@ export function AddWorkoutModal({
       .catch(() => {});
   }, [date]);
 
-  // 種目を追加する関数
   const addExercise = () => {
-    // 選択された種目名を取得（カスタム種目の場合はカスタム種目名を使用）
-    const exerciseName = isCustomExercise
-      ? customExerciseName
-      : selectedExercise;
-    if (!exerciseName || exerciseName.trim() === '') return;
-
-    // 新しい種目オブジェクトを作成し、既存の種目リストに追加
+    if (!selectedExercise || selectedExercise.trim() === '') return;
     const newExercise: Exercise = {
       id: Date.now().toString(),
-      name: exerciseName.trim(),
+      name: selectedExercise,
       bodyPart: selectedBodyPart,
       sets: [
         {
@@ -89,11 +80,8 @@ export function AddWorkoutModal({
         },
       ],
     };
-
     setExercises([...exercises, newExercise]);
     setSelectedExercise('');
-    setCustomExerciseName('');
-    setIsCustomExercise(false);
   };
 
   // 種目を削除する関数
@@ -316,10 +304,6 @@ export function AddWorkoutModal({
                         onChange={(e) => {
                           const value = e.target.value;
                           setSelectedExercise(value);
-                          setIsCustomExercise(value === 'custom');
-                          if (value !== 'custom') {
-                            setCustomExerciseName('');
-                          }
                         }}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                       >
@@ -338,17 +322,13 @@ export function AddWorkoutModal({
                             {name}
                           </option>
                         ))}
-                        <option value="custom">カスタム種目を入力</option>
                       </select>
                     </div>
                     <div className="flex items-end">
                       <button
                         type="button"
                         onClick={addExercise}
-                        disabled={
-                          !selectedExercise ||
-                          (isCustomExercise && !customExerciseName.trim())
-                        }
+                        disabled={!selectedExercise}
                         className="w-full flex items-center justify-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Plus className="w-4 h-4" />
@@ -356,22 +336,6 @@ export function AddWorkoutModal({
                       </button>
                     </div>
                   </div>
-
-                  {/* Custom Exercise Input */}
-                  {isCustomExercise && (
-                    <div>
-                      <label className="block text-gray-700 mb-2">
-                        カスタム種目名
-                      </label>
-                      <input
-                        type="text"
-                        value={customExerciseName}
-                        onChange={(e) => setCustomExerciseName(e.target.value)}
-                        placeholder="例: スミスマシンスクワット"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                      />
-                    </div>
-                  )}
                 </div>
               </div>
 

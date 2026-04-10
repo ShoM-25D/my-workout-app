@@ -76,6 +76,7 @@ def get_db():
   finally:
     db.close()
 
+
 def get_current_user(authorization: Optional[str] = Header(None), db: Session = Depends(get_db)) -> User:
   if not authorization or not authorization.startswith("Bearer "):
     raise HTTPException(status_code=401, detail="認証トークンがありません")
@@ -93,6 +94,11 @@ def get_current_user(authorization: Optional[str] = Header(None), db: Session = 
     raise HTTPException(status_code=401, detail="ユーザが見つかりません")
 
   return user
+
+def get_admin_user(current_user:User = Depends(get_current_user)) -> User:
+  if not current_user.is_admin:
+    raise HTTPException(status_code=403, detail="管理者権限が必要です")
+  return current_user
 
 # ユーザ登録
 @app.post("/auth/register")
@@ -179,13 +185,7 @@ def create_workout(workout: WorkoutCreate, current_user: User = Depends(get_curr
     exercise = db.query(Exercise).filter(Exercise.name == exercise_input.name).first()
 
     if not exercise:
-      exercise = Exercise(
-        name = exercise_input.name,
-        target_muscle = exercise_input.body_part,
-        description=""
-      )
-      db.add(exercise)
-      db.flush()
+      raise HTTPException(status_code=404, detail=f"種目 '{exercise_input.name}' が見つかりません")
 
     workout_exercise = WorkoutExercise(
       workout_id=new_workout.id,
@@ -375,13 +375,7 @@ def add_exercises_to_workout(
   for order, exercise_input in enumerate(data.exercises, max_order + 1):
     exercise = db.query(Exercise).filter(Exercise.name == exercise_input.name).first()
     if not exercise:
-      exercise = Exercise(
-        name=exercise_input.name,
-        target_muscle=exercise_input.body_part,
-        description=""
-      )
-      db.add(exercise)
-      db.flush()
+      raise HTTPException(status_code=404, detail=f"種目 '{exercise_input.name}' が見つかりません")
 
     workout_exercise = WorkoutExercise(
       workout_id=workout_id,
@@ -437,7 +431,7 @@ def get_exercises(db: Session = Depends(get_db)):
   return db.query(Exercise).all()
 
 @app.post("/exercises")
-def create_exercise(exercise: ExerciseCreate, db: Session = Depends(get_db)):
+def create_exercise(exercise: ExerciseCreate, current_db: User = Depends(get_admin_user), db: Session = Depends(get_db)):
   new_exercise = Exercise(
     name=exercise.name,
     target_muscle=exercise.target_muscle,

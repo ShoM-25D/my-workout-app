@@ -20,6 +20,7 @@ class User(Base):
   name = Column(String, nullable=False)
   email = Column(String, unique=True, nullable=False)
   password_hash = Column(String, nullable=False)
+  is_admin = Column(Boolean, default=False)
   # 自動的に時間を記録
   created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
   workouts = relationship("Workout", back_populates="user")

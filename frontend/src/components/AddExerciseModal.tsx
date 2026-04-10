@@ -24,8 +24,6 @@ export function AddExerciseModal({
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [selectedBodyPart, setSelectedBodyPart] = useState('胸');
   const [selectedExercise, setSelectedExercise] = useState(' ');
-  const [customExerciseName, setCustomExerciseName] = useState(' ');
-  const [isCustomExercise, setIsCustomExercise] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
@@ -36,21 +34,16 @@ export function AddExerciseModal({
   }, []);
 
   const addExercise = () => {
-    const exerciseName = isCustomExercise
-      ? customExerciseName
-      : selectedExercise;
-    if (!exerciseName || exerciseName.trim() === '') return;
+    if (!selectedExercise || selectedExercise.trim() === '') return;
     const newExercise: Exercise = {
       id: Date.now().toString(),
-      name: exerciseName.trim(),
+      name: selectedExercise,
       bodyPart: selectedBodyPart,
       sets: [{ weight: 0, reps: 0 }],
     };
 
     setExercises([...exercises, newExercise]);
     setSelectedExercise('');
-    setCustomExerciseName('');
-    setIsCustomExercise(false);
   };
 
   const removeExercise = (id: string) => {
@@ -166,8 +159,6 @@ export function AddExerciseModal({
                   onChange={(e) => {
                     const value = e.target.value;
                     setSelectedExercise(value);
-                    setIsCustomExercise(value === 'custom');
-                    if (value !== 'custom') setCustomExerciseName('');
                   }}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                 >
@@ -177,30 +168,12 @@ export function AddExerciseModal({
                       {name}
                     </option>
                   ))}
-                  <option value="custom">カスタム種目を入力</option>
                 </select>
               </div>
-              {isCustomExercise && (
-                <div>
-                  <label className="block text-gray-700 mb-2">
-                    カスタム種目名
-                  </label>
-                  <input
-                    type="text"
-                    value={customExerciseName}
-                    onChange={(e) => setCustomExerciseName(e.target.value)}
-                    placeholder="例: スミスマシンスクワット"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                  />
-                </div>
-              )}
               <button
                 type="button"
                 onClick={addExercise}
-                disabled={
-                  !selectedExercise ||
-                  (isCustomExercise && !customExerciseName.trim())
-                }
+                disabled={!selectedExercise}
                 className="w-full flex items-center justify-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 disabled:opacity-50"
               >
                 <Plus className="w-4 h-4" />
