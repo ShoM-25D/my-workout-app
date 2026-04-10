@@ -127,7 +127,7 @@ def login(user: UserLogin, db:Session = Depends(get_db)):
     raise HTTPException(status_code=401, detail="メールアドレスまたはパスワードが正しくありません")
 
   token = create_access_token({"sub": str(db_user.id), "name" : db_user.name})
-  return {"access_token": token, "token_type": "bearer", "name": db_user.name, "email": db_user.email, "is_admin":db_user.is_admin or False}
+  return {"access_token": token, "token_type": "bearer", "id":db_user.id,"name": db_user.name, "email": db_user.email, "is_admin":db_user.is_admin or False}
 
 @app.get("/workouts")
 def get_workouts(current_user: User = Depends(get_current_user),db: Session = Depends(get_db)):

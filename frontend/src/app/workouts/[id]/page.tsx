@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, notFound } from 'next/navigation';
 import { Workout } from '@/types/database';
 import { WorkoutDetail } from '@/components/WorkoutDetail';
 import { fetchWithAuth, API_BASE_URL } from '@/lib/api';
@@ -66,6 +66,7 @@ export default function WorkoutDetailPage() {
   }, [params.id]);
 
   if (loading) return <div className="p-8 text-center">読み込み中...</div>;
+  if (!workout) notFound();
 
   return (
     <>

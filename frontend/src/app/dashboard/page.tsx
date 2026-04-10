@@ -12,9 +12,10 @@ export default function DashboardPage() {
   const { workouts, loading, fetchWorkouts, deleteWorkout } = useWorkouts();
 
   useEffect(() => {
+    const token = localStorage.getItem('access_token');
+    const id = localStorage.getItem('user_id');
     const name = localStorage.getItem('user_name');
     const email = localStorage.getItem('user_email');
-    const token = localStorage.getItem('access_token');
     const is_admin = localStorage.getItem('is_admin') === 'true';
 
     if (!token || !name || !email) {
@@ -23,7 +24,7 @@ export default function DashboardPage() {
     }
 
     setCurrentUser({
-      id: '1',
+      id: id ?? '1',
       name,
       email,
       is_admin,
@@ -32,6 +33,7 @@ export default function DashboardPage() {
 
   const handleLogout = () => {
     localStorage.removeItem('access_token');
+    localStorage.removeItem('user_id');
     localStorage.removeItem('user_name');
     localStorage.removeItem('user_email');
     localStorage.removeItem('is_admin');

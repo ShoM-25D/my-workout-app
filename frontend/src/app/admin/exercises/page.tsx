@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { bodyParts } from '@/lib/constants';
+import { ArrowLeft } from 'lucide-react';
 
 export default function AdminExercisePage() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function AdminExercisePage() {
   const [exercises, setExercises] = useState<
     { id: number; name: string; target_muscle: string }[]
   >([]);
+  const [activeTab, setActiveTab] = useState(bodyParts[0]);
 
   const fetchExercises = async () => {
     fetchWithAuth(`${API_BASE_URL}/exercises`)
@@ -73,6 +75,13 @@ export default function AdminExercisePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-2xl mx-auto px-4 py-8">
+        <button
+          onClick={() => router.push('/dashboard')}
+          className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 mb-4"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          戻る
+        </button>
         <h1 className="text-gray-900 font-bold text-2xl mb-8">種目管理</h1>
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
@@ -87,6 +96,7 @@ export default function AdminExercisePage() {
             <select
               value={targetMuscle}
               onChange={(e) => setTargetMuscle(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
             >
               <option value="">選択してください</option>
               {bodyParts.map((part) => (
@@ -99,6 +109,7 @@ export default function AdminExercisePage() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="説明"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
             />
             <button
               type="submit"
@@ -110,12 +121,30 @@ export default function AdminExercisePage() {
           </form>
         </div>
 
-        <ul className="bg-white rounded-lg shadow-sm border border-gray-200 divide-y">
-          {exercises.map((ex) => (
-            <li key={ex.id} className="p-4 text-gray-900">
-              {ex.name}/{ex.target_muscle}
-            </li>
+        <div className="flex gap-4">
+          {bodyParts.map((part) => (
+            <button
+              key={part}
+              onClick={() => setActiveTab(part)}
+              className={`pb-2 border-b-2 transition-colors ${
+                activeTab === part
+                  ? 'border-indigo-600 text-indigo-600'
+                  : 'border-transparent text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              {part}
+            </button>
           ))}
+        </div>
+
+        <ul className="bg-white rounded-lg shadow-sm border border-gray-200 divide-y">
+          {exercises
+            .filter((ex) => ex.target_muscle == activeTab)
+            .map((ex) => (
+              <li key={ex.id} className="p-4 text-gray-900">
+                {ex.name}
+              </li>
+            ))}
         </ul>
       </div>
     </div>

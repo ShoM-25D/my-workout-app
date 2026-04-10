@@ -45,6 +45,10 @@ export function Dashboard({
     setIsAddModalOpen(false);
     if (onRefresh) onRefresh();
   };
+  const onDateClick = (date: string) => {
+    const workout = workouts.find((w) => w.date === date);
+    if (workout) onViewWorkout(workout);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -168,7 +172,9 @@ export function Dashboard({
                 </div>
               </div>
             )}
-            {activeTab === 'calendar' && <CalendarView workouts={workouts} />}
+            {activeTab === 'calendar' && (
+              <CalendarView workouts={workouts} onDateClick={onDateClick} />
+            )}
           </div>
         </div>
       </div>

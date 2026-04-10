@@ -23,6 +23,7 @@ export default function LoginPageContainer() {
       }
       const data = await response.json();
       localStorage.setItem('access_token', data.access_token);
+      localStorage.setItem('user_id', data.id);
       localStorage.setItem('user_name', data.name);
       localStorage.setItem('user_email', data.email);
       localStorage.setItem('is_admin', String(data.is_admin ?? false));
