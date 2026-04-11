@@ -72,10 +72,7 @@ export function AddWorkoutModal({
         {
           weight: 0,
           reps: 0,
-          isSuperset: false,
-          supersetExerciseName: '',
-          supersetWeight: 0,
-          supersetReps: 0,
+          setType: 'normal',
         },
       ],
     };
@@ -92,8 +89,14 @@ export function AddWorkoutModal({
   const updateSet = (
     exerciseId: string,
     setIndex: number,
-    field: 'weight' | 'reps' | 'isSuperset' | 'supersetWeight' | 'supersetReps',
-    value: number | boolean,
+    field:
+      | 'weight'
+      | 'reps'
+      | 'setType'
+      | 'supersetExerciseId'
+      | 'supersetWeight'
+      | 'supersetReps',
+    value: number | boolean | string,
   ) => {
     setExercises(
       exercises.map((exercise) => {
@@ -148,7 +151,8 @@ export function AddWorkoutModal({
         sets: ex.sets.map((set) => ({
           weight: set.weight,
           reps: set.reps,
-          is_superset: set.isSuperset ?? false,
+          set_type: set.setType ?? 'normal',
+          superset_exercise_id: set.supersetExerciseId ?? null,
           superset_weight: set.supersetWeight ?? null,
           superset_reps: set.supersetReps ?? null,
         })),
@@ -405,12 +409,34 @@ export function AddWorkoutModal({
                                   updateSet(
                                     exercise.id,
                                     setIndex,
-                                    'isSuperset',
-                                    !set.isSuperset,
+                                    'setType',
+                                    set.setType === 'dropset'
+                                      ? 'normal'
+                                      : 'dropset',
                                   )
                                 }
                                 className={`px-2 py-1 rounded text-sm ${
-                                  set.isSuperset
+                                  set.setType === 'dropset'
+                                    ? 'bg-indigo-600 text-white'
+                                    : 'bg-gray-100 text-gray-600'
+                                }`}
+                              >
+                                DS
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  updateSet(
+                                    exercise.id,
+                                    setIndex,
+                                    'setType',
+                                    set.setType === 'superset'
+                                      ? 'normal'
+                                      : 'superset',
+                                  )
+                                }
+                                className={`px-2 py-1 rounded text-sm ${
+                                  set.setType === 'superset'
                                     ? 'bg-indigo-600 text-white'
                                     : 'bg-gray-100 text-gray-600'
                                 }`}
@@ -430,41 +456,64 @@ export function AddWorkoutModal({
                               )}
                             </div>
                             {/* スーパーセット入力欄 */}
-                            {set.isSuperset && (
+                            {(set.setType === 'dropset' ||
+                              set.setType === 'superset') && (
                               <div className="flex items-center gap-2 ml-16 bg-indigo-50 p-2 rounded-lg">
-                                <span className="text-indigo-600 text-sm">
-                                  SS:
-                                </span>
-                                <input
-                                  type="number"
-                                  value={set.supersetWeight || ''}
-                                  onChange={(e) =>
-                                    updateSet(
-                                      exercise.id,
-                                      setIndex,
-                                      'supersetWeight',
-                                      parseFloat(e.target.value) || 0,
-                                    )
-                                  }
-                                  placeholder="重量"
-                                  className="flex-1 px-3 py-2 border border-indigo-300 rounded-lg"
-                                />
-                                <span className="text-gray-600">kg</span>
-                                <input
-                                  type="number"
-                                  value={set.supersetReps || ''}
-                                  onChange={(e) =>
-                                    updateSet(
-                                      exercise.id,
-                                      setIndex,
-                                      'supersetReps',
-                                      parseInt(e.target.value) || 0,
-                                    )
-                                  }
-                                  placeholder="回数"
-                                  className="flex-1 px-3 py-2 border border-indigo-300 rounded-lg"
-                                />
-                                <span className="text-gray-600">回</span>
+                                {set.setType === 'superset' && (
+                                  <select
+                                    value={set.supersetExerciseId ?? ''}
+                                    onChange={(e) =>
+                                      updateSet(
+                                        exercise.id,
+                                        setIndex,
+                                        'supersetExerciseId',
+                                        parseInt(e.target.value),
+                                      )
+                                    }
+                                    className="w-full px-3 py-2 border border-indigo-300 rounded-lg"
+                                  >
+                                    <option value="">
+                                      種目を選択してください
+                                    </option>
+                                    {apiExercises.map((ex) => (
+                                      <option key={ex.id} value={ex.id}>
+                                        {ex.name}
+                                      </option>
+                                    ))}
+                                  </select>
+                                )}
+                                <div className="flex items-center gap-2">
+                                  <input
+                                    type="number"
+                                    value={set.supersetWeight || ''}
+                                    onChange={(e) =>
+                                      updateSet(
+                                        exercise.id,
+                                        setIndex,
+                                        'supersetWeight',
+                                        parseFloat(e.target.value) || 0,
+                                      )
+                                    }
+                                    placeholder="重量"
+                                    className="flex-1 px-3 py-2 border border-indigo-300 rounded-lg"
+                                  />
+                                  <span className="text-gray-600">kg</span>
+                                  <input
+                                    type="number"
+                                    value={set.supersetReps || ''}
+                                    onChange={(e) =>
+                                      updateSet(
+                                        exercise.id,
+                                        setIndex,
+                                        'supersetReps',
+                                        parseInt(e.target.value) || 0,
+                                      )
+                                    }
+                                    placeholder="回数"
+                                    className="flex-1 px-3 py-2 border border-indigo-300 rounded-lg"
+                                  />
+                                  <span className="text-gray-600">回</span>
+                                </div>
                               </div>
                             )}
                           </div>

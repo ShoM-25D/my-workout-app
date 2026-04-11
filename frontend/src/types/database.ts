@@ -9,8 +9,8 @@ export interface User {
 export interface Set {
   weight: number;
   reps: number;
-  isSuperset?: boolean;
-  supersetExerciseName?: string;
+  setType?: string;
+  supersetExerciseId?: number;
   supersetWeight?: number;
   supersetReps?: number;
 }

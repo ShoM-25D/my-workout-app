@@ -21,7 +21,8 @@ app.add_middleware(
 class SetInput(BaseModel):
   weight: float
   reps: int
-  is_superset: bool = False
+  set_type: str = "normal"
+  superset_exercise_id: int | None = None
   superset_weight: float | None = None
   superset_reps: int | None = None
 
@@ -60,7 +61,7 @@ class SetCreate(BaseModel):
   set_number:int
   weight: float
   reps: int
-  is_superset: bool = False
+  set_type: str="normal"
   superset_exercise_id: int | None = None
   superset_weight: float | None = None
   superset_reps: int | None = None
@@ -148,7 +149,8 @@ def get_workouts(current_user: User = Depends(get_current_user),db: Session = De
           {
             "weight": s.weight,
             "reps": s.reps,
-            "isSuperset": s.is_superset,
+            "setType":s.set_type,
+            "supersetExerciseId": s.superset_exercise_id,
             "supersetWeight": s.superset_weight,
             "supersetReps": s.superset_reps,
           } for s in we.sets],
@@ -201,8 +203,9 @@ def create_workout(workout: WorkoutCreate, current_user: User = Depends(get_curr
         set_number=set_number,
         weight=set_input.weight,
         reps=set_input.reps,
-        is_superset=set_input.is_superset,
-        superset_weight= set_input.superset_weight,
+        set_type=set_input.set_type,
+        superset_exercise_id=set_input.superset_exercise_id,
+        superset_weight=set_input.superset_weight,
         superset_reps=set_input.superset_reps
       )
       db.add(new_set)
@@ -214,7 +217,7 @@ def create_workout(workout: WorkoutCreate, current_user: User = Depends(get_curr
       "sets": [{
             "weight": s.weight,
             "reps": s.reps,
-            "isSuperset": s.is_superset,
+            "setType":s.set_type,
             "supersetWeight": s.superset_weight,
             "supersetReps": s.superset_reps
           } for s in exercise_input.sets],
@@ -289,7 +292,8 @@ def get_workout(workout_id: int, current_user: User = Depends(get_current_user),
       "sets":[{
             "weight": s.weight,
             "reps": s.reps,
-            "isSuperset": s.is_superset,
+            "setType":s.set_type,
+            "supersetExerciseId":s.superset_exercise_id,
             "supersetWeight": s.superset_weight,
             "supersetReps": s.superset_reps,
           } for s in we.sets],
@@ -391,7 +395,8 @@ def add_exercises_to_workout(
         set_number=set_number,
         weight=set_input.weight,
         reps=set_input.reps,
-        is_superset=set_input.is_superset,
+        set_type=set_input.set_type,
+        superset_exercise_id=set_input.superset_exercise_id,
         superset_weight=set_input.superset_weight,
         superset_reps=set_input.superset_reps,
       )
@@ -474,7 +479,7 @@ def add_set_to_workout_exercise(workout_exercise_id: int, set_data: SetCreate, d
     set_number=set_data.set_number,
     weight=set_data.weight,
     reps=set_data.reps,
-    is_superset= set_data.is_superset,
+    set_type=set_data.set_type,
     superset_exercise_id=set_data.superset_exercise_id,
     superset_weight=set_data.superset_weight,
     superset_reps=set_data.superset_reps,

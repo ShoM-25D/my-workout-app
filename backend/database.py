@@ -64,7 +64,7 @@ class Set(Base):
   set_number = Column(Integer, nullable=False)
   weight = Column(Float)
   reps = Column(Integer)
-  is_superset = Column(Boolean, default=False)
+  set_type = Column(String, default="normal")
   superset_exercise_id = Column(Integer, ForeignKey("exercises.id"), nullable=True)
   superset_weight = Column(Float, nullable=True)
   superset_reps = Column(Integer, nullable=True)

@@ -17,7 +17,6 @@ import { AddExerciseModal } from './AddExerciseModal';
 import { DeleteWorkoutButton } from './DeleteWorkoutButton';
 import { Button } from './ui/button';
 
-
 // トレーニング記録の詳細を表示するコンポーネント
 type WorkoutDetailProps = {
   workout: Workout;
@@ -248,13 +247,14 @@ export function WorkoutDetail({
                             </tr>
 
                             {/* スーパーセット行 */}
-                            {set.isSuperset && (
+                            {(set.setType === 'dropset' ||
+                              set.setType === 'superset') && (
                               <tr
                                 key={`${setIndex}-ss`}
                                 className="border-b border-indigo-100 bg-indigo-50"
                               >
                                 <td className="py-2 px-4 text-indigo-600 text-sm">
-                                  SS
+                                  {set.setType === 'dropset' ? 'DS' : 'SS'}
                                 </td>
                                 <td className="text-right py-2 px-4 text-indigo-600 text-sm">
                                   {set.supersetWeight}kg
