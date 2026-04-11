@@ -89,7 +89,7 @@ export function CalendarView({ workouts, onDateClick }: CalendarViewProps) {
               disabled={!hasWorkout}
               onClick={() => {
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                hasWorkout && onDateClick(dateStr);
+                onDateClick(dateStr);
               }}
               className={`aspect-square flex items-center justify-center rounded-lg border ${
                 hasWorkout

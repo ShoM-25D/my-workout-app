@@ -19,5 +19,5 @@ export function useAuth(requireAdmin: boolean) {
         return;
       }
     }
-  }, []);
+  }, [requireAdmin, router]);
 }

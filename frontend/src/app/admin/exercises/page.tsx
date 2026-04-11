@@ -7,6 +7,15 @@ import { ArrowLeft } from 'lucide-react';
 
 import { bodyParts } from '@/lib/constants';
 import { API_BASE_URL, fetchWithAuth } from '@/lib/api';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { useAuth } from '@/hooks/useAuth';
 
 export default function AdminExercisePage() {
@@ -18,6 +27,7 @@ export default function AdminExercisePage() {
     { id: number; name: string; target_muscle: string }[]
   >([]);
   const [activeTab, setActiveTab] = useState(bodyParts[0]);
+  const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
 
   const fetchExercises = async () => {
     fetchWithAuth(`${API_BASE_URL}/exercises`)
@@ -57,6 +67,20 @@ export default function AdminExercisePage() {
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : '不明なエラー';
       toast.error(`保存に失敗しました:${message}`);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      await fetchWithAuth(`${API_BASE_URL}/exercises/${id}`, {
+        method: 'DELETE',
+      });
+
+      toast.success('種目を削除しました');
+      fetchExercises();
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : '不明なエラー';
+      toast.error(`削除に失敗しました:${message}`);
     }
   };
 
@@ -129,11 +153,36 @@ export default function AdminExercisePage() {
           {exercises
             .filter((ex) => ex.target_muscle === activeTab)
             .map((ex) => (
-              <li key={ex.id} className="p-4 text-gray-900">
+              <li
+                key={ex.id}
+                className="p-4 text-gray-900 flex items-center justify-between"
+              >
                 {ex.name}
+                <button
+                  onClick={() => setPendingDeleteId(ex.id)}
+                  className="text-red-600 hover:bg-red-50 px-3 py-1 rounded-lg"
+                >
+                  削除
+                </button>
               </li>
             ))}
         </ul>
+        <AlertDialog
+          open={pendingDeleteId !== null}
+          onOpenChange={(open) => !open && setPendingDeleteId(null)}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>この種目を削除しますか？</AlertDialogTitle>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogAction onClick={() => handleDelete(pendingDeleteId!)}>
+                削除
+              </AlertDialogAction>
+              <AlertDialogCancel>キャンセル</AlertDialogCancel>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );

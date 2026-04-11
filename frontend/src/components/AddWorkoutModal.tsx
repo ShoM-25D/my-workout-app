@@ -46,7 +46,6 @@ export function AddWorkoutModal({
   // 種目の選択とカスタム種目の入力を管理する状態
   const [selectedBodyPart, setSelectedBodyPart] = useState('胸');
   const [selectedExercise, setSelectedExercise] = useState('');
-  const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
     if (!date) return;
@@ -57,8 +56,7 @@ export function AddWorkoutModal({
       .then((data) => {
         if (data && data.id) {
           setExistingWorkout(data);
-        } else {
-          setIsChecking(false);
+          setAddMode('existing');
         }
       })
       .catch(() => {});

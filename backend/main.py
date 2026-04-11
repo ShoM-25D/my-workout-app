@@ -400,6 +400,21 @@ def add_exercises_to_workout(
   db.commit()
   return {"message": "種目を追加しました"}
 
+@app.delete("/exercises/{exercise_id}")
+def delete_exercise_by_id(exercise_id:int, admin_user: User = Depends(get_admin_user),  db: Session = Depends(get_db)):
+  exercise = db.query(Exercise).filter(Exercise.id == exercise_id).first()
+  if not exercise:
+    raise HTTPException(status_code=404, detail="種目が見つかりません")
+
+  try:
+    db.delete(exercise)
+    db.commit()
+
+  except Exception as e:
+    db.rollback()
+    raise HTTPException(status_code=500, detail="削除に失敗しました")
+  return{"message": "削除が完了しました"}
+
 @app.delete("/workout_exercise/{workout_exercise_id}")
 def delete_exercise_id(
   workout_exercise_id: int,

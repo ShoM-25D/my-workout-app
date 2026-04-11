@@ -42,7 +42,7 @@ export function Dashboard({
   );
   const router = useRouter();
   const { personalRecords, frequency, loading } = useStats();
-  const handleAddWorkout = (workout: Workout) => {
+  const handleAddWorkout = (_workout: Workout) => {
     // 新しいトレーニングをリストの先頭に追加
     setIsAddModalOpen(false);
     if (onRefresh) onRefresh();
