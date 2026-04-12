@@ -28,6 +28,8 @@ export default function AdminExercisePage() {
   >([]);
   const [activeTab, setActiveTab] = useState(bodyParts[0]);
   const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editingName, setEditingName] = useState('');
 
   const fetchExercises = async () => {
     fetchWithAuth(`${API_BASE_URL}/exercises`)
@@ -70,6 +72,26 @@ export default function AdminExercisePage() {
     }
   };
 
+  const handleUpdate = async (id: number) => {
+    try {
+      await fetchWithAuth(`${API_BASE_URL}/exercises/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          name: editingName,
+          target_muscle:
+            exercises.find((ex) => ex.id === id)?.target_muscle ?? '',
+          description: '',
+        }),
+      });
+      toast.success('種目を更新しました');
+      setEditingId(null);
+      fetchExercises();
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : '不明なエラー';
+      toast.error(`更新に失敗しました:${message}`);
+    }
+  };
+
   const handleDelete = async (id: number) => {
     try {
       await fetchWithAuth(`${API_BASE_URL}/exercises/${id}`, {
@@ -78,6 +100,7 @@ export default function AdminExercisePage() {
 
       toast.success('種目を削除しました');
       fetchExercises();
+      setEditingId(null);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : '不明なエラー';
       toast.error(`削除に失敗しました:${message}`);
@@ -157,13 +180,50 @@ export default function AdminExercisePage() {
                 key={ex.id}
                 className="p-4 text-gray-900 flex items-center justify-between"
               >
-                {ex.name}
-                <button
-                  onClick={() => setPendingDeleteId(ex.id)}
-                  className="text-red-600 hover:bg-red-50 px-3 py-1 rounded-lg"
-                >
-                  削除
-                </button>
+                {editingId === ex.id ? (
+                  <>
+                    <input
+                      value={editingName}
+                      onChange={(e) => setEditingName(e.target.value)}
+                      className="px-3 py-1 border border-gray-300 rounded-lg"
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleUpdate(ex.id)}
+                        className="text-indigo-600 hover:bg-indigo-50 px-3 py-1 rounded-lg"
+                      >
+                        保存
+                      </button>
+                      <button
+                        onClick={() => setEditingId(null)}
+                        className="text-gray-600 hover:bg-gray-50 px-3 py-1 rounded-lg"
+                      >
+                        キャンセル
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {ex.name}
+                    <div>
+                      <button
+                        onClick={() => {
+                          setEditingId(ex.id);
+                          setEditingName(ex.name);
+                        }}
+                        className="text-indigo-600 hover:bg-indigo-50 px-3 py-1 rounded-lg"
+                      >
+                        編集
+                      </button>
+                      <button
+                        onClick={() => setPendingDeleteId(ex.id)}
+                        className="text-red-600 hover:bg-red-50 px-3 py-1 rounded-lg"
+                      >
+                        削除
+                      </button>
+                    </div>
+                  </>
+                )}
               </li>
             ))}
         </ul>

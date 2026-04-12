@@ -163,6 +163,9 @@ export function WorkoutDetail({
           <div className="space-y-6">
             {workout.exercises.map((exercise, index) => {
               const maxWeight = Math.max(...exercise.sets.map((s) => s.weight));
+              const estimate1RM = Math.max(
+                ...exercise.sets.map((s) => s.weight * (1 + s.reps / 30)),
+              );
               const totalReps = exercise.sets.reduce(
                 (sum, s) => sum + s.reps,
                 0,
@@ -192,6 +195,9 @@ export function WorkoutDetail({
                     <div className="text-right">
                       <p className="text-gray-600">最大重量</p>
                       <p className="text-indigo-600">{maxWeight}kg</p>
+                      <p className="text-gray-500 text-sm">
+                        推定1RM: {Math.round(estimate1RM)}kg
+                      </p>
                       <p>
                         <Button
                           variant="ghost"

@@ -466,6 +466,21 @@ def create_exercise(exercise: ExerciseCreate, current_db: User = Depends(get_adm
   db.refresh(new_exercise)
   return new_exercise
 
+@app.put("/exercises/{exercise_id}")
+def update_exercise(exercise_id: int, exercise_data: ExerciseCreate, admin_user: User = Depends(get_admin_user), db: Session = Depends(get_db)):
+    exercise = db.query(Exercise).filter(
+    Exercise.id == exercise_id,
+  ).first()
+
+    if not exercise:
+      raise HTTPException(status_code=404, detail="種目が見つかりません")
+
+    exercise.name = exercise_data.name
+    exercise.target_muscle = exercise_data.target_muscle
+    exercise.description = exercise_data.description
+    db.commit()
+
+    return {"message": "更新が完了しました"}
 
 @app.post("/workout_exercise/{workout_exercise_id}/sets")
 def add_set_to_workout_exercise(workout_exercise_id: int, set_data: SetCreate, db: Session = Depends(get_db)):

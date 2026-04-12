@@ -55,4 +55,36 @@
   .bg-indigo-50 .text-gray-600 {
     color: #171717 !important;
   }
+
+  input,
+  select,
+  textarea {
+    background-color: #1a1a1a !important;
+    color: #ededed !important;
+    border-color: #333333 !important;
+  }
+
+  .bg-gray-100 {
+    background-color: #2a2a2a !important;
+  }
+
+  .bg-gray-50.rounded-lg {
+    background-color: #1a1a1a !important;
+  }
+
+  table thead tr {
+    border-color: #333333 !important;
+  }
+
+  table tbody tr {
+    border-color: #222222 !important;
+  }
+
+  tfoot tr {
+    background-color: #1a1a1a !important;
+  }
+
+  .from-yellow-50.to-orange-50 .text-gray-900 {
+    color: #ea580c !important; /* text-orange-600と同じ色 */
+  }
 }
