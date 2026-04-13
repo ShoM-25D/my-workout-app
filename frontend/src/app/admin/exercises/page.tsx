@@ -20,6 +20,7 @@ import { useAuth } from '@/hooks/useAuth';
 
 export default function AdminExercisePage() {
   const router = useRouter();
+  const { isLoading } = useAuth(true);
   const [name, setName] = useState('');
   const [targetMuscle, setTargetMuscle] = useState('');
   const [description, setDescription] = useState('');
@@ -38,11 +39,11 @@ export default function AdminExercisePage() {
       .catch((err) => console.error(err));
   };
 
-  useAuth(true);
   useEffect(() => {
     fetchExercises();
   }, []);
 
+  if (isLoading) return <div className="p-8 text-center">読み込み中...</div>;
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const isDuplicate = exercises.some((ex) => ex.name === name);

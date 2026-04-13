@@ -65,7 +65,6 @@ export function DeleteWorkoutButton({
             <AlertDialogTitle>{date}の記録を全て削除しますか</AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>キャンセル</AlertDialogCancel>
             <AlertDialogAction
               onClick={(e) => {
                 e.stopPropagation();
@@ -74,6 +73,9 @@ export function DeleteWorkoutButton({
             >
               削除
             </AlertDialogAction>
+            <AlertDialogCancel onClick={(e) => e.stopPropagation()}>
+              キャンセル
+            </AlertDialogCancel>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

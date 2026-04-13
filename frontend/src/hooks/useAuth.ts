@@ -1,9 +1,10 @@
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export function useAuth(requireAdmin: boolean) {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
@@ -19,5 +20,7 @@ export function useAuth(requireAdmin: boolean) {
         return;
       }
     }
-  }, [requireAdmin, router]);
+    setIsLoading(false);
+  }, []);
+  return { isLoading };
 }

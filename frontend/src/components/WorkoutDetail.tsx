@@ -1,5 +1,5 @@
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ArrowLeft,
   Calendar,
@@ -16,12 +16,14 @@ import { useWorkouts } from '@/hooks/useWorkouts';
 import { AddExerciseModal } from './AddExerciseModal';
 import { DeleteWorkoutButton } from './DeleteWorkoutButton';
 import { Button } from './ui/button';
+import { API_BASE_URL, fetchWithAuth } from '@/lib/api';
 
 // トレーニング記録の詳細を表示するコンポーネント
 type WorkoutDetailProps = {
   workout: Workout;
   onBack: () => void;
   onExerciseDeleted: (id: string) => void;
+  onRefresh: () => void;
 };
 
 // トレーニング記録の詳細を表示するコンポーネント。日付、時間、種目ごとのセット内容などを見やすく表示する
@@ -29,6 +31,7 @@ export function WorkoutDetail({
   workout,
   onBack,
   onExerciseDeleted,
+  onRefresh,
 }: WorkoutDetailProps) {
   const [isAddExerciseOpen, setIsAddExerciseOpen] = useState(false);
   const router = useRouter();
@@ -42,6 +45,16 @@ export function WorkoutDetail({
       weekday: 'long',
     });
   };
+  const [apiExercises, setApiExercises] = useState<
+    { id: number; name: string; target_muscle: string }[]
+  >([]);
+
+  useEffect(() => {
+    fetchWithAuth(`${API_BASE_URL}/exercises`)
+      .then((r) => r.json())
+      .then((data) => setApiExercises(data))
+      .catch(() => {});
+  }, []);
 
   if (!workout) {
     return (
@@ -260,7 +273,9 @@ export function WorkoutDetail({
                                 className="border-b border-indigo-100 bg-indigo-50"
                               >
                                 <td className="py-2 px-4 text-indigo-600 text-sm">
-                                  {set.setType === 'dropset' ? 'DS' : 'SS'}
+                                  {set.setType === 'dropset'
+                                    ? 'DS'
+                                    : `SS: ${apiExercises.find((ex) => ex.id === set.supersetExerciseId)?.name ?? ''}`}
                                 </td>
                                 <td className="text-right py-2 px-4 text-indigo-600 text-sm">
                                   {set.supersetWeight}kg
@@ -317,7 +332,7 @@ export function WorkoutDetail({
             onClose={() => setIsAddExerciseOpen(false)}
             onAdd={() => {
               setIsAddExerciseOpen(false);
-              router.refresh();
+              onRefresh();
             }}
           />
         )}

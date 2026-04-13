@@ -77,25 +77,33 @@ def get_db():
   finally:
     db.close()
 
+# トークン切れによるリダイレクト処理
 def get_current_user(authorization: Optional[str] = Header(None), db: Session = Depends(get_db)) -> User:
+  # ヘッダーの存在チェック
   if not authorization or not authorization.startswith("Bearer "):
     raise HTTPException(status_code=401, detail="認証トークンがありません")
 
   token = authorization.split(" ")[1]
+  # JWTトークンの辞書化
   payload = decode_access_token(token)
 
+  # payloadの検証
   if not payload:
     raise HTTPException(status_code=401, detail="無効または期限切れのトークンです")
 
+  # sub: ユーザIDなど, exp: 有効期限, iat: 発行時刻
   user_id = int(payload.get("sub"))
   user = db.query(User).filter(User.id == user_id).first()
 
+  # 最終確認と返却
   if not user:
     raise HTTPException(status_code=401, detail="ユーザが見つかりません")
 
   return user
 
+# 管理者チェック
 def get_admin_user(current_user:User = Depends(get_current_user)) -> User:
+  # 権限の判定
   if not current_user.is_admin:
     raise HTTPException(status_code=403, detail="管理者権限が必要です")
   return current_user
@@ -124,14 +132,25 @@ def register(user: UserRegister, db: Session = Depends(get_db)):
 def login(user: UserLogin, db:Session = Depends(get_db)):
   db_user = db.query(User).filter(User.email == user.email).first()
 
+  # パスワードと存在チェック
   if not db_user or not verify_password(user.password, db_user.password_hash):
     raise HTTPException(status_code=401, detail="メールアドレスまたはパスワードが正しくありません")
 
+  # JWTを作成
   token = create_access_token({"sub": str(db_user.id), "name" : db_user.name})
-  return {"access_token": token, "token_type": "bearer", "id":db_user.id,"name": db_user.name, "email": db_user.email, "is_admin":db_user.is_admin or False}
+  return {
+    "access_token": token,
+    "token_type": "bearer",
+    "id":db_user.id,
+    "name": db_user.name,
+    "email": db_user.email,
+    "is_admin":db_user.is_admin or False
+  }
 
+# Workoutsをすべて取得
 @app.get("/workouts")
 def get_workouts(current_user: User = Depends(get_current_user),db: Session = Depends(get_db)):
+  # データの取得
   workouts = db.query(Workout).options(
     joinedload(Workout.workout_exercises).joinedload(WorkoutExercise.sets),
     joinedload(Workout.workout_exercises).joinedload(WorkoutExercise.exercise)
@@ -155,6 +174,7 @@ def get_workouts(current_user: User = Depends(get_current_user),db: Session = De
             "supersetReps": s.superset_reps,
           } for s in we.sets],
       })
+
     result.append({
       "id":str(workout.id),
       "date":workout.date,
@@ -167,8 +187,10 @@ def get_workouts(current_user: User = Depends(get_current_user),db: Session = De
 
   return result
 
+# 本日のトレーニング内容を保存
 @app.post("/workouts")
 def create_workout(workout: WorkoutCreate, current_user: User = Depends(get_current_user),db: Session = Depends(get_db)):
+  # 親データ(Workout)作成
   new_workout = Workout(
     user_id=current_user.id,
     date=workout.date,
@@ -182,6 +204,7 @@ def create_workout(workout: WorkoutCreate, current_user: User = Depends(get_curr
   db.flush()
 
   exercises_out = []
+  # 中間データ(WorkoutExercise)作成
   for order, exercise_input in enumerate(workout.exercises):
     exercise = db.query(Exercise).filter(Exercise.name == exercise_input.name).first()
 
@@ -197,6 +220,7 @@ def create_workout(workout: WorkoutCreate, current_user: User = Depends(get_curr
     db.add(workout_exercise)
     db.flush()
 
+    # 子データ(Set)作成
     for set_number, set_input in enumerate(exercise_input.sets, 1):
       new_set = Set(
         workout_exercise_id = workout_exercise.id,
@@ -234,6 +258,7 @@ def create_workout(workout: WorkoutCreate, current_user: User = Depends(get_curr
     "bodyFat": new_workout.body_fat,
     "exercises": exercises_out,}
 
+# 日付に対応する記録を取得
 @app.get("/workouts/by-date/{date}")
 def get_workout_by_date(date:str, current_user:User = Depends(get_current_user), db: Session = Depends(get_db)):
   workout = db.query(Workout).filter(
@@ -246,6 +271,7 @@ def get_workout_by_date(date:str, current_user:User = Depends(get_current_user),
 
   return {"id": str(workout.id), "date": workout.date}
 
+# 日付に対応する記録を削除
 @app.delete("/workouts/by-date/{date}")
 def delete_workout_by_date(date: str, current_user:User = Depends(get_current_user), db:Session = Depends(get_db)):
   workouts = db.query(Workout).filter(
@@ -411,13 +437,18 @@ def delete_exercise_by_id(exercise_id:int, admin_user: User = Depends(get_admin_
   if not exercise:
     raise HTTPException(status_code=404, detail="種目が見つかりません")
 
+  used = db.query(WorkoutExercise).filter(WorkoutExercise.exercise_id == exercise_id).first()
+  if used:
+    raise HTTPException(status_code=400, detail="この種目はワークアウト記録で使用中のため削除できません")
+
   try:
     db.delete(exercise)
     db.commit()
 
   except Exception as e:
     db.rollback()
-    raise HTTPException(status_code=500, detail="削除に失敗しました")
+    print(f"Delete Error: {e}")
+    raise HTTPException(status_code=500, detail=f"削除に失敗しました: {str(e)}")
   return{"message": "削除が完了しました"}
 
 @app.delete("/workout_exercise/{workout_exercise_id}")

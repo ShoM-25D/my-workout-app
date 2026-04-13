@@ -59,14 +59,18 @@ export default function WorkoutDetailPage() {
     router.push('/dashboard');
   };
 
-  useEffect(() => {
-    if (isDeleting) return;
+  const fetchWorkout = () => {
     const id = params.id;
     fetchWithAuth(`${API_BASE_URL}/workouts/${id}`)
       .then((r) => r.json())
       .then((data) => setWorkout(data))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    if (isDeleting) return;
+    fetchWorkout();
   }, [params.id, isDeleting]);
 
   if (loading) return <div className="p-8 text-center">読み込み中...</div>;
@@ -78,6 +82,7 @@ export default function WorkoutDetailPage() {
         workout={workout!}
         onBack={() => router.push('/dashboard')}
         onExerciseDeleted={handleExerciseDeleted}
+        onRefresh={fetchWorkout}
       />
       <AlertDialog
         open={isDeleteExerciseOpen}
