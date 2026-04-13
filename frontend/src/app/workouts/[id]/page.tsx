@@ -28,6 +28,7 @@ export default function WorkoutDetailPage() {
   const [pendingExerciseId, setPendingExerciseId] = useState<string | null>(
     null,
   );
+  const [isDeleting, setIsDeleting] = useState(false);
   const { deleteExercise, deleteWorkoutById } = useWorkouts();
 
   const handleExerciseDeleted = (deletedExerciseId: string) => {
@@ -53,18 +54,20 @@ export default function WorkoutDetailPage() {
   };
 
   const confirmMemoDelete = async () => {
+    setIsDeleting(true);
     await deleteWorkoutById(workout!.id);
     router.push('/dashboard');
   };
 
   useEffect(() => {
+    if (isDeleting) return;
     const id = params.id;
     fetchWithAuth(`${API_BASE_URL}/workouts/${id}`)
       .then((r) => r.json())
       .then((data) => setWorkout(data))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
-  }, [params.id]);
+  }, [params.id, isDeleting]);
 
   if (loading) return <div className="p-8 text-center">読み込み中...</div>;
   if (!workout) notFound();

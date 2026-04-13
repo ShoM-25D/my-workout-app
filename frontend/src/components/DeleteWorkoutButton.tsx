@@ -66,7 +66,14 @@ export function DeleteWorkoutButton({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>キャンセル</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>削除</AlertDialogAction>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete();
+              }}
+            >
+              削除
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

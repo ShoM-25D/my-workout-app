@@ -40,7 +40,13 @@ export function AddExerciseModal({
       id: Date.now().toString(),
       name: selectedExercise,
       bodyPart: selectedBodyPart,
-      sets: [{ weight: 0, reps: 0 }],
+      sets: [
+        {
+          weight: 0,
+          reps: 0,
+          setType: 'normal',
+        },
+      ],
     };
 
     setExercises([...exercises, newExercise]);
@@ -54,8 +60,14 @@ export function AddExerciseModal({
   const updateSet = (
     exerciseId: string,
     setIndex: number,
-    field: 'weight' | 'reps',
-    value: number,
+    field:
+      | 'weight'
+      | 'reps'
+      | 'setType'
+      | 'supersetExerciseId'
+      | 'supersetWeight'
+      | 'supersetReps',
+    value: number | boolean | string,
   ) => {
     setExercises(
       exercises.map((exercise) => {
@@ -83,6 +95,20 @@ export function AddExerciseModal({
     );
   };
 
+  const removeSet = (exerciseId: string, setIndex: number) => {
+    setExercises(
+      exercises.map((exercise) => {
+        if (exercise.id === exerciseId && exercise.sets.length > 1) {
+          return {
+            ...exercise,
+            sets: exercise.sets.filter((_, i) => i !== setIndex),
+          };
+        }
+        return exercise;
+      }),
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
@@ -95,7 +121,14 @@ export function AddExerciseModal({
             exercises: exercises.map((ex) => ({
               name: ex.name,
               body_part: ex.bodyPart,
-              sets: ex.sets.map((s) => ({ weight: s.weight, reps: s.reps })),
+              sets: ex.sets.map((set) => ({
+                weight: set.weight,
+                reps: set.reps,
+                set_type: set.setType ?? 'normal',
+                superset_exercise_id: set.supersetExerciseId ?? null,
+                superset_weight: set.supersetWeight ?? null,
+                superset_reps: set.supersetReps ?? null,
+              })),
             })),
           }),
         },
@@ -200,43 +233,151 @@ export function AddExerciseModal({
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
-              {exercise.sets.map((set, setIndex) => (
-                <div key={setIndex} className="flex items-center gap-2 mb-2">
-                  <span className="text-gray-600 w-16">
-                    {setIndex + 1}セット
-                  </span>
-                  <input
-                    type="number"
-                    value={set.weight || ''}
-                    onChange={(e) =>
-                      updateSet(
-                        exercise.id,
-                        setIndex,
-                        'weight',
-                        parseFloat(e.target.value) || 0,
-                      )
-                    }
-                    placeholder="重量"
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg"
-                  />
-                  <span className="text-gray-600 ">kg</span>
-                  <input
-                    type="number"
-                    value={set.reps || ''}
-                    onChange={(e) =>
-                      updateSet(
-                        exercise.id,
-                        setIndex,
-                        'reps',
-                        parseFloat(e.target.value) || 0,
-                      )
-                    }
-                    placeholder="回数"
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg"
-                  />
-                  <span className="text-gray-600">回</span>
-                </div>
-              ))}
+              <div className="space-y-2">
+                {exercise.sets.map((set, setIndex) => (
+                  <div key={setIndex} className="space-y-2 mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-600 w-16">
+                        {setIndex + 1}セット
+                      </span>
+                      <input
+                        type="number"
+                        value={set.weight || ''}
+                        onChange={(e) =>
+                          updateSet(
+                            exercise.id,
+                            setIndex,
+                            'weight',
+                            parseFloat(e.target.value) || 0,
+                          )
+                        }
+                        placeholder="重量"
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg"
+                      />
+                      <span className="text-gray-600 ">kg</span>
+                      <input
+                        type="number"
+                        value={set.reps || ''}
+                        onChange={(e) =>
+                          updateSet(
+                            exercise.id,
+                            setIndex,
+                            'reps',
+                            parseFloat(e.target.value) || 0,
+                          )
+                        }
+                        placeholder="回数"
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg"
+                      />
+                      <span className="text-gray-600">回</span>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          updateSet(
+                            exercise.id,
+                            setIndex,
+                            'setType',
+                            set.setType === 'dropset' ? 'normal' : 'dropset',
+                          )
+                        }
+                        className={`px-2 py-1 rounded text-sm ${
+                          set.setType === 'dropset'
+                            ? 'bg-indigo-600 text-white'
+                            : 'bg-gray-100 text-gray-600'
+                        }`}
+                      >
+                        DS
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          updateSet(
+                            exercise.id,
+                            setIndex,
+                            'setType',
+                            set.setType === 'superset' ? 'normal' : 'superset',
+                          )
+                        }
+                        className={`px-2 py-1 rounded text-sm ${
+                          set.setType === 'superset'
+                            ? 'bg-indigo-600 text-white'
+                            : 'bg-gray-100 text-gray-600'
+                        }`}
+                      >
+                        SS
+                      </button>
+                      {exercise.sets.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeSet(exercise.id, setIndex)}
+                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                    {(set.setType === 'dropset' ||
+                      set.setType === 'superset') && (
+                      <div className="flex items-center gap-2 ml-16 bg-indigo-50 p-2 rounded-lg">
+                        {set.setType === 'superset' && (
+                          <select
+                            value={set.supersetExerciseId ?? ''}
+                            onChange={(e) =>
+                              updateSet(
+                                exercise.id,
+                                setIndex,
+                                'supersetExerciseId',
+                                parseInt(e.target.value),
+                              )
+                            }
+                            className="w-full px-3 py-2 border border-indigo-300 rounded-lg"
+                          >
+                            <option value="">種目を選択してください</option>
+                            {apiExercises.map((ex) => (
+                              <option key={ex.id} value={ex.id}>
+                                {ex.name}
+                              </option>
+                            ))}
+                          </select>
+                        )}
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="number"
+                            value={set.supersetWeight || ''}
+                            onChange={(e) =>
+                              updateSet(
+                                exercise.id,
+                                setIndex,
+                                'supersetWeight',
+                                parseFloat(e.target.value) || 0,
+                              )
+                            }
+                            placeholder="重量"
+                            className="flex-1 px-3 py-2 border border-indigo-300 rounded-lg"
+                          />
+                          <span className="text-gray-600">kg</span>
+                          <input
+                            type="number"
+                            value={set.supersetReps || ''}
+                            onChange={(e) =>
+                              updateSet(
+                                exercise.id,
+                                setIndex,
+                                'supersetReps',
+                                parseInt(e.target.value) || 0,
+                              )
+                            }
+                            placeholder="回数"
+                            className="flex-1 px-3 py-2 border border-indigo-300 rounded-lg"
+                          />
+                          <span className="text-gray-600">回</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
               <button
                 type="button"
                 onClick={() => addSet(exercise.id)}
