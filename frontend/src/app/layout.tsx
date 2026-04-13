@@ -35,7 +35,7 @@ export default function RootLayout({
       >
         {/* Page.tsxの場所 */}
         {children}
-        <Toaster />
+        <Toaster theme="system" />
       </body>
     </html>
   );

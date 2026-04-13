@@ -279,7 +279,6 @@ def delete_workout_by_date(date: str, current_user:User = Depends(get_current_us
     Workout.user_id == current_user.id
   ).all()
 
-
   if not workouts:
     raise HTTPException(status_code=404, detail=f"{date}の記録が見つかりませんでした")
 
