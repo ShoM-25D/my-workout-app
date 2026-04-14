@@ -44,7 +44,9 @@ export default function AdminExercisePage() {
   }, []);
 
   if (isLoading) return <div className="p-8 text-center">読み込み中...</div>;
+
   const handleSubmit = async (e: React.FormEvent) => {
+    // 更新機能をストップ
     e.preventDefault();
     const isDuplicate = exercises.some((ex) => ex.name === name);
     if (isDuplicate) {
@@ -66,6 +68,7 @@ export default function AdminExercisePage() {
       setName('');
       setTargetMuscle('');
       setDescription('');
+      setEditingId(null);
       fetchExercises();
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : '不明なエラー';

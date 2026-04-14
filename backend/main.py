@@ -298,6 +298,7 @@ def delete_workout_by_date(date: str, current_user:User = Depends(get_current_us
 
   return {"message": f"{date}の記録（{len(workouts)}件）をすべて削除しました。"}
 
+# 記録を取得
 @app.get("/workouts/{workout_id}")
 def get_workout(workout_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
   workout = db.query(Workout).options(
@@ -334,6 +335,7 @@ def get_workout(workout_id: int, current_user: User = Depends(get_current_user),
     "exercises": exercises,
   }
 
+# 記録を削除
 @app.delete("/workouts/{workout_id}")
 def delete_workout_by_id(workout_id: int, current_user:User = Depends(get_current_user), db:Session = Depends(get_db)):
   workout = db.query(Workout).filter(
@@ -358,7 +360,7 @@ def delete_workout_by_id(workout_id: int, current_user:User = Depends(get_curren
 
   return {"message": f"記録を削除しました。"}
 
-
+# 記録に追加
 @app.post("/workouts/{workout_id}/exercises")
 def add_exercise_to_workout(workout_id: int, workout_exercise: WorkoutExerciseCreate, db: Session = Depends(get_db)):
   workout = db.query(Workout).filter(Workout.id == workout_id).first()
@@ -381,6 +383,7 @@ def add_exercise_to_workout(workout_id: int, workout_exercise: WorkoutExerciseCr
   db.refresh(new_workout_exercise)
   return new_workout_exercise
 
+# 既存の記録に種目を追加
 @app.post("/workouts/{workout_id}/add-exercises")
 def add_exercises_to_workout(
   workout_id: int,
@@ -396,12 +399,14 @@ def add_exercises_to_workout(
   if not workout:
     raise HTTPException(status_code=404, detail="ワークアウトが見つかりません")
 
+  # 追加する種目を既存の種目の最後に追加するための項番を取得(DBから直接取得するため早い)
   max_order = db.query(func.max(WorkoutExercise.order)).filter(
     WorkoutExercise.workout_id == workout_id
   ).scalar() or 0
 
   for order, exercise_input in enumerate(data.exercises, max_order + 1):
     exercise = db.query(Exercise).filter(Exercise.name == exercise_input.name).first()
+
     if not exercise:
       raise HTTPException(status_code=404, detail=f"種目 '{exercise_input.name}' が見つかりません")
 
@@ -430,13 +435,16 @@ def add_exercises_to_workout(
   db.commit()
   return {"message": "種目を追加しました"}
 
+# 種目を削除(管理者のみ)
 @app.delete("/exercises/{exercise_id}")
 def delete_exercise_by_id(exercise_id:int, admin_user: User = Depends(get_admin_user),  db: Session = Depends(get_db)):
   exercise = db.query(Exercise).filter(Exercise.id == exercise_id).first()
+
   if not exercise:
     raise HTTPException(status_code=404, detail="種目が見つかりません")
 
   used = db.query(WorkoutExercise).filter(WorkoutExercise.exercise_id == exercise_id).first()
+
   if used:
     raise HTTPException(status_code=400, detail="この種目はワークアウト記録で使用中のため削除できません")
 
@@ -448,8 +456,10 @@ def delete_exercise_by_id(exercise_id:int, admin_user: User = Depends(get_admin_
     db.rollback()
     print(f"Delete Error: {e}")
     raise HTTPException(status_code=500, detail=f"削除に失敗しました: {str(e)}")
+
   return{"message": "削除が完了しました"}
 
+# 記録の種目を削除
 @app.delete("/workout_exercise/{workout_exercise_id}")
 def delete_exercise_id(
   workout_exercise_id: int,
@@ -475,12 +485,14 @@ def delete_exercise_id(
 
   return {"message": "削除が完了しました"}
 
+# 種目一覧を取得
 @app.get("/exercises")
 def get_exercises(db: Session = Depends(get_db)):
   return db.query(Exercise).all()
 
+# 種目を新規作成(管理者のみ)
 @app.post("/exercises")
-def create_exercise(exercise: ExerciseCreate, current_db: User = Depends(get_admin_user), db: Session = Depends(get_db)):
+def create_exercise(exercise: ExerciseCreate, admin_user: User = Depends(get_admin_user), db: Session = Depends(get_db)):
   existing_exercise = db.query(Exercise).filter(Exercise.name == exercise.name).first()
 
   if existing_exercise:
@@ -496,6 +508,7 @@ def create_exercise(exercise: ExerciseCreate, current_db: User = Depends(get_adm
   db.refresh(new_exercise)
   return new_exercise
 
+# 種目名を更新(管理者のみ)
 @app.put("/exercises/{exercise_id}")
 def update_exercise(exercise_id: int, exercise_data: ExerciseCreate, admin_user: User = Depends(get_admin_user), db: Session = Depends(get_db)):
     exercise = db.query(Exercise).filter(
@@ -512,6 +525,7 @@ def update_exercise(exercise_id: int, exercise_data: ExerciseCreate, admin_user:
 
     return {"message": "更新が完了しました"}
 
+# 記録の種目にセットを追加
 @app.post("/workout_exercise/{workout_exercise_id}/sets")
 def add_set_to_workout_exercise(workout_exercise_id: int, set_data: SetCreate, db: Session = Depends(get_db)):
   workout_exercise = db.query(WorkoutExercise).filter(WorkoutExercise.id == workout_exercise_id).first()
@@ -534,6 +548,7 @@ def add_set_to_workout_exercise(workout_exercise_id: int, set_data: SetCreate, d
   db.refresh(new_set)
   return new_set
 
+# 個人のMAX重量を取得
 @app.get("/stats/personal_records")
 def get_personal_records(current_user: User = Depends(get_current_user),db: Session = Depends(get_db)):
   records = db.query(
@@ -549,6 +564,7 @@ def get_personal_records(current_user: User = Depends(get_current_user),db: Sess
 
   return [{"exercise_name": r.name, "max_weight" :r.max_weight} for r in records]
 
+# 種目ごとの進捗を取得
 @app.get("/stats/progress/{exercise_id}")
 def get_progress(exercise_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
   progress= db.query(
@@ -563,6 +579,7 @@ def get_progress(exercise_id: int, current_user: User = Depends(get_current_user
 
   return [{"date": p.date, "max_weight": p.max_weight} for p in progress]
 
+# 頻度を取得
 @app.get("/stats/frequency")
 def get_frequency(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
   today = datetime.now(timezone.utc)

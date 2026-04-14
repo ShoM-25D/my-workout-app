@@ -37,6 +37,8 @@ export function RegisterPage({ onRegister }: RegisterPageProps) {
             <input
               id="name"
               type="text"
+              autoComplete="off"
+              name="name_field_random"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
@@ -51,6 +53,8 @@ export function RegisterPage({ onRegister }: RegisterPageProps) {
             <input
               id="email"
               type="email"
+              autoComplete="off"
+              name="email_field_random"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
@@ -66,6 +70,7 @@ export function RegisterPage({ onRegister }: RegisterPageProps) {
             <input
               id="password"
               type="password"
+              autoComplete="off"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
@@ -83,6 +88,7 @@ export function RegisterPage({ onRegister }: RegisterPageProps) {
             <input
               id="confirmPassword"
               type="password"
+              autoComplete="off"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"

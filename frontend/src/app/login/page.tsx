@@ -9,7 +9,6 @@ import { API_BASE_URL } from '@/lib/api';
 export default function LoginPageContainer() {
   const router = useRouter();
 
-  // ユーザのログイン情報、画面の状態を管理 - handle系
   const handleLogin = async (email: string, password: string) => {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
