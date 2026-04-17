@@ -22,7 +22,7 @@ cd my-workout-app
  2. 解凍したフォルダへ移動します。
 
 ### 3. 環境変数の設定
-```.env.example```をコピーして```.env```ファイルを作成し、環境に合わせて内容を編集します。
+`.env.example`をコピーして`.env`ファイルを作成し、環境に合わせて内容を編集します。
 ```bash
 cp .env.example .env
 ```
@@ -30,5 +30,10 @@ cp .env.example .env
 
 | 変数名 | 設定内容・説明 |
 | :--- | :--- |
-| `POSTGRES_USER` | データベースのユーザー名 |
-| `POSTGRES_PASSWORD` | データベースのパスワード |
+| `POSTGRES_USER` | 任意のユーザー名 |
+| `POSTGRES_PASSWORD` | 任意のパスワード |
+| `POSTGRES_DB` | 任意のデータベース名 |
+| `DATABASE_URL` | `postgresql://<ユーザー名>:<パスワード>@localhost:5432/<DB名>` |
+| `DATABASE_URL_DOCKER` | `postgresql://<ユーザー名>:<パスワード>@db:5432/<DB名>` |
+| `SECRET_KEY` | 任意のランダムな文字列 |
+| `NEXT_PUBLIC_API_URL` | `http://localhost:8000` |
