@@ -37,3 +37,19 @@ cp .env.example .env
 | `DATABASE_URL_DOCKER` | `postgresql://<ユーザー名>:<パスワード>@db:5432/<DB名>` |
 | `SECRET_KEY` | 任意のランダムな文字列 |
 | `NEXT_PUBLIC_API_URL` | `http://localhost:8000` |
+
+### 4. コンテナの起動
+Docker Composeを使用して、各サービス（フロントエンド、バックエンド、データベース）を構築・起動します。
+```bash
+docker compose up --build
+```
+
+### 5. マイグレーションの実行
+```bash
+docker compose exec backend alembic upgrade head
+```
+
+### 6. アクセス確認
+- **フロントエンド**: [http://localhost:3000](http://localhost:3000)
+- **バックエンド**: [http://localhost:8000](http://localhost:8000)
+- **APIドキュメント**: [http://localhost:8000/docs](http://localhost:8000/docs)
