@@ -13,7 +13,7 @@
 
 **Gitを使用する場合：**
 ```bash
-git clone [https://github.com/ShoM-25D/my-workout-app.git](https://github.com/ShoM-25D/my-workout-app.git)
+git clone https://github.com/ShoM-25D/my-workout-app.git
 cd my-workout-app
 ```
 
