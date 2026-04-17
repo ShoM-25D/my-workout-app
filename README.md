@@ -41,7 +41,7 @@ cp .env.example .env
 ### 4. コンテナの起動
 Docker Composeを使用して、各サービス（フロントエンド、バックエンド、データベース）を構築・起動します。
 ```bash
-docker compose up --build
+docker compose up --build -d
 ```
 
 ### 5. マイグレーションの実行
