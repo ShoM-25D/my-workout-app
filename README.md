@@ -27,4 +27,6 @@ cd my-workout-app
 cp .env.example .env
 ```
 **.envファイルの編集項目：**
-| 変数名 | 設定内容・説明 |
+
+* **`POSTGRES_USER`**: 任意のユーザー名。
+* **`POSTGRES_PASSWORD`**: 任意のパスワード。
