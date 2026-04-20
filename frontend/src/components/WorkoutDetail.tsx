@@ -19,7 +19,7 @@ import { Button } from './ui/button';
 import { API_BASE_URL, fetchWithAuth } from '@/lib/api';
 import { toast } from 'sonner';
 
-// トレーニング記録の詳細を表示するコンポーネント
+// トレーニング記録の詳細を表示する
 type WorkoutDetailProps = {
   workout: Workout;
   onBack: () => void;
@@ -27,7 +27,7 @@ type WorkoutDetailProps = {
   onRefresh: () => void;
 };
 
-// トレーニング記録の詳細を表示するコンポーネント。日付、時間、種目ごとのセット内容などを見やすく表示する
+// トレーニング記録の詳細を表示する。日付、時間、種目ごとのセット内容などを見やすく表示する
 export function WorkoutDetail({
   workout,
   onBack,
