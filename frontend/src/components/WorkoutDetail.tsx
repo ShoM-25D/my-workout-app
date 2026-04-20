@@ -17,6 +17,7 @@ import { AddExerciseModal } from './AddExerciseModal';
 import { DeleteWorkoutButton } from './DeleteWorkoutButton';
 import { Button } from './ui/button';
 import { API_BASE_URL, fetchWithAuth } from '@/lib/api';
+import { toast } from 'sonner';
 
 // トレーニング記録の詳細を表示するコンポーネント
 type WorkoutDetailProps = {
@@ -34,6 +35,10 @@ export function WorkoutDetail({
   onRefresh,
 }: WorkoutDetailProps) {
   const [isAddExerciseOpen, setIsAddExerciseOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingNotes, setEditingNotes] = useState(workout.notes ?? '');
+  const [editingStartTime, setEditingStartTime] = useState('');
+  const [editingEndTime, setEditingEndTime] = useState('');
   const router = useRouter();
   const { deleteWorkout } = useWorkouts();
   const formatDate = (dateString: string) => {
@@ -82,6 +87,31 @@ export function WorkoutDetail({
     0,
   );
 
+  const calcDuration = () => {
+    if (!editingStartTime || !editingEndTime) return 0;
+    const [startH, startM] = editingStartTime.split(':').map(Number);
+    const [endH, endM] = editingEndTime.split(':').map(Number);
+    return endH * 60 + endM - (startH * 60 + startM);
+  };
+
+  const handleUpdate = async () => {
+    const duration = calcDuration();
+    const finalDuration = duration > 0 ? duration : workout.duration;
+    if (editingStartTime && editingEndTime && duration <= 0) {
+      toast.error('終了時刻は開始時刻より後にしてください');
+      return;
+    }
+    await fetchWithAuth(`${API_BASE_URL}/workouts/${workout.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        duration: finalDuration,
+        notes: editingNotes || null,
+      }),
+    });
+    onRefresh();
+    setIsEditing(false);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm border-b border-gray-200">
@@ -113,7 +143,24 @@ export function WorkoutDetail({
               <Clock className="w-4 h-4" />
               <span>時間</span>
             </div>
-            <p className="text-gray-900">{workout.duration}分</p>
+            {isEditing ? (
+              <div className="grid grid-cols-2 gap-2">
+                <input
+                  type="time"
+                  value={editingStartTime}
+                  onChange={(e) => setEditingStartTime(e.target.value)}
+                  className="px-2 py-1 border border-gray-300 rounded-lg"
+                />
+                <input
+                  type="time"
+                  value={editingEndTime}
+                  onChange={(e) => setEditingEndTime(e.target.value)}
+                  className="px-2 py-1 border border-gray-300 rounded-lg"
+                />
+              </div>
+            ) : (
+              <p className="text-gray-900">{workout.duration}分</p>
+            )}
           </div>
 
           <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
@@ -131,6 +178,31 @@ export function WorkoutDetail({
             </div>
             <p className="text-gray-900">{totalVolume.toLocaleString()}kg</p>
           </div>
+        </div>
+        <div className="flex justify-end mb-4">
+          {!isEditing ? (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="px-4 py-2 text-indigo-600 hover:bg-indigo-50 rounded-lg"
+            >
+              編集
+            </button>
+          ) : (
+            <div className="flex gap-2">
+              <button
+                onClick={handleUpdate}
+                className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
+              >
+                保存
+              </button>
+              <button
+                onClick={() => setIsEditing(false)}
+                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+              >
+                キャンセル
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Body Metrics */}
@@ -318,10 +390,21 @@ export function WorkoutDetail({
         </div>
 
         {/* Notes */}
-        {workout.notes && (
+        {(workout.notes || isEditing) && (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <h2 className="text-gray-900 mb-4">メモ</h2>
-            <p className="text-gray-700 whitespace-pre-wrap">{workout.notes}</p>
+            {isEditing ? (
+              <textarea
+                value={editingNotes}
+                onChange={(e) => setEditingNotes(e.target.value)}
+                className="w-full px-4 py-2 boarder border-gray-300 rounded-lg"
+                rows={3}
+              />
+            ) : (
+              <p className="text-gray-700 whitespace-pre-wrap">
+                {workout.notes}
+              </p>
+            )}
           </div>
         )}
 

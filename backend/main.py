@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException, Header
 from typing import Optional
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sqlalchemy import func
 from sqlalchemy.orm import Session, joinedload
 from database import SessionLocal, User, Exercise, Workout, WorkoutExercise, Set
@@ -19,8 +19,8 @@ app.add_middleware(
 )
 # データモデルの定義
 class SetInput(BaseModel):
-  weight: float
-  reps: int
+  weight: float = Field(ge=0)
+  reps: int = Field(ge=1, le=999)
   set_type: str = "normal"
   superset_exercise_id: int | None = None
   superset_weight: float | None = None
@@ -59,8 +59,8 @@ class UserLogin(BaseModel):
 
 class SetCreate(BaseModel):
   set_number:int
-  weight: float
-  reps: int
+  weight: float = Field(ge=0)
+  reps: int = Field(ge=1, le=999)
   set_type: str="normal"
   superset_exercise_id: int | None = None
   superset_weight: float | None = None
@@ -68,6 +68,10 @@ class SetCreate(BaseModel):
 
 class AddExercisesToWorkout(BaseModel):
   exercises: list[ExerciseInput]
+
+class WorkoutUpdate(BaseModel):
+  duration: int
+  notes: str | None = None
 
 # DBセッションを取得する関数
 def get_db():
@@ -359,6 +363,22 @@ def delete_workout_by_id(workout_id: int, current_user:User = Depends(get_curren
     raise HTTPException(status_code=500, detail="削除中にエラーが発生しました")
 
   return {"message": f"記録を削除しました。"}
+
+@app.patch("/workouts/{workout_id}")
+def update_workout(workout_id: int, workout_data: WorkoutUpdate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+  workout = db.query(Workout).filter(
+    Workout.id == workout_id,
+    Workout.user_id == current_user.id
+  ).first()
+
+  if not workout:
+    raise HTTPException(status_code=404, detail="ワークアウトが見つかりません")
+
+  workout.duration = workout_data.duration
+  workout.notes = workout_data.notes
+  db.commit()
+
+  return {"message": "更新が完了しました"}
 
 # 記録に追加
 @app.post("/workouts/{workout_id}/exercises")

@@ -242,6 +242,8 @@ export function AddExerciseModal({
                       </span>
                       <input
                         type="number"
+                        min="0"
+                        max="999"
                         value={set.weight || ''}
                         onChange={(e) =>
                           updateSet(
@@ -257,6 +259,8 @@ export function AddExerciseModal({
                       <span className="text-gray-600 ">kg</span>
                       <input
                         type="number"
+                        min="1"
+                        max="999"
                         value={set.reps || ''}
                         onChange={(e) =>
                           updateSet(
@@ -343,6 +347,8 @@ export function AddExerciseModal({
                         <div className="flex items-center gap-2">
                           <input
                             type="number"
+                            min="0"
+                            max="999"
                             value={set.supersetWeight || ''}
                             onChange={(e) =>
                               updateSet(
@@ -358,6 +364,8 @@ export function AddExerciseModal({
                           <span className="text-gray-600">kg</span>
                           <input
                             type="number"
+                            min="1"
+                            max="999"
                             value={set.supersetReps || ''}
                             onChange={(e) =>
                               updateSet(

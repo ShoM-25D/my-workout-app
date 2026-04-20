@@ -21,7 +21,7 @@ type ProgressChartProps = {
 
 type DataPoint = {
   date: string;
-  [key: string]: string | number;
+  [key: string]: string | number | null;
 };
 
 // トレーニング記録から種目ごとの重量推移を計算し、LineChartで表示するコンポーネント
@@ -58,7 +58,7 @@ export function ProgressChart({ workouts }: ProgressChartProps) {
   const chartData = workouts
     .slice()
     .reverse()
-    .slice(-10) // Last 10 workouts
+    .slice(-10)
     .map((workout) => {
       const dataPoint: DataPoint = {
         date: new Date(workout.date).toLocaleDateString('ja-JP', {
@@ -70,7 +70,7 @@ export function ProgressChart({ workouts }: ProgressChartProps) {
       // 上位3種目の重量をデータポイントに追加。該当種目がない場合は0とする
       topExercises.forEach((exerciseName) => {
         const exercise = workout.exercises.find((e) => e.name === exerciseName);
-        dataPoint[exerciseName] = 0;
+        dataPoint[exerciseName] = null;
 
         if (exercise && exercise.sets && exercise.sets.length > 0) {
           const weights = exercise.sets
@@ -125,6 +125,7 @@ export function ProgressChart({ workouts }: ProgressChartProps) {
                 strokeWidth={2}
                 dot={{ r: 4 }}
                 activeDot={{ r: 6 }}
+                connectNulls={true}
               />
             ))}
           </LineChart>

@@ -31,8 +31,9 @@ export function AddWorkoutModal({
 
   // 日付の状態を管理（初期値は今日の日付）
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   // トレーニングの時間、種目、メモ、体重、体脂肪率などの状態を管理
-  const [duration, setDuration] = useState(60);
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [notes, setNotes] = useState('');
   const [bodyWeight, setBodyWeight] = useState('');
@@ -61,6 +62,13 @@ export function AddWorkoutModal({
       })
       .catch(() => {});
   }, [date]);
+
+  const calcDuration = () => {
+    if (!startTime || !endTime) return 0;
+    const [startH, startM] = startTime.split(':').map(Number);
+    const [endH, endM] = endTime.split(':').map(Number);
+    return endH * 60 + endM - (startH * 60 + startM);
+  };
 
   const addExercise = () => {
     if (!selectedExercise || selectedExercise.trim() === '') return;
@@ -143,6 +151,11 @@ export function AddWorkoutModal({
   // フォームの送信処理。入力されたデータをまとめて新しいトレーニング記録オブジェクトを作成し、onAddコールバックに渡す
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const duration = calcDuration();
+    if (duration <= 0) {
+      toast.error('終了時刻は開始時刻より後にしてください');
+      return;
+    }
 
     try {
       const exercisesData = exercises.map((ex) => ({
@@ -239,16 +252,27 @@ export function AddWorkoutModal({
             </div>
           ) : (
             <>
-              <div>
-                <label className="block text-gray-700 mb-2">時間（分）</label>
-                <input
-                  type="number"
-                  value={duration}
-                  onChange={(e) => setDuration(parseInt(e.target.value))}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                  required
-                  min="1"
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-700 mb-2">開始時刻</label>
+                  <input
+                    type="time"
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 mb-2">終了時刻</label>
+                  <input
+                    type="time"
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                    required
+                  />
+                </div>
               </div>
 
               <div className="space-y-4">
@@ -374,6 +398,8 @@ export function AddWorkoutModal({
                               </span>
                               <input
                                 type="number"
+                                min="0"
+                                max="999"
                                 value={set.weight || ''}
                                 onChange={(e) =>
                                   updateSet(
@@ -389,6 +415,8 @@ export function AddWorkoutModal({
                               <span className="text-gray-600">kg</span>
                               <input
                                 type="number"
+                                min="1"
+                                max="999"
                                 value={set.reps || ''}
                                 onChange={(e) =>
                                   updateSet(
@@ -485,6 +513,8 @@ export function AddWorkoutModal({
                                 <div className="flex items-center gap-2">
                                   <input
                                     type="number"
+                                    min="0"
+                                    max="999"
                                     value={set.supersetWeight || ''}
                                     onChange={(e) =>
                                       updateSet(
@@ -500,6 +530,8 @@ export function AddWorkoutModal({
                                   <span className="text-gray-600">kg</span>
                                   <input
                                     type="number"
+                                    min="1"
+                                    max="999"
                                     value={set.supersetReps || ''}
                                     onChange={(e) =>
                                       updateSet(

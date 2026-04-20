@@ -70,7 +70,7 @@ export function WorkoutList({
             </div>
 
             <div className="space-y-2">
-              {workout.exercises?.map((exercise) => (
+              {workout.exercises?.slice(0, 5).map((exercise) => (
                 <div
                   key={exercise.id}
                   className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded"
@@ -86,6 +86,11 @@ export function WorkoutList({
                   </span>
                 </div>
               ))}
+              {workout.exercises?.length > 5 && (
+                <div className="text-gray-500 text-sm px-3 py-2">
+                  他 {workout.exercises.length - 5} 種目...
+                </div>
+              )}
             </div>
 
             {workout.notes && (
