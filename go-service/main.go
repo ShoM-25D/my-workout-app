@@ -7,8 +7,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/jackc/pgx/v5"
 	"github.com/joho/godotenv"
 )
@@ -37,6 +40,11 @@ func main() {
 	fmt.Println("Connected to PostgreSQL!")
 
 	r := chi.NewRouter()
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins: []string{"http://localhost:3000"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders: []string{"Authorization", "Content-Type"},
+	}))
 
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request){
 
@@ -44,9 +52,10 @@ func main() {
 		json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
 	})
 
-	r.Get("/workouts", func(w http.ResponseWriter, r *http.Request){
+	r.With(authMiddleware).Get("/workouts", func(w http.ResponseWriter, r *http.Request){
+		userID := r.Context().Value("userID").(string)
 		rows, err := db.Query(context.Background(),
-		"SELECT id, date, duration, notes FROM workouts ORDER BY date DESC")
+		"SELECT id, date, duration, notes FROM workouts WHERE user_id = $1 ORDER BY date DESC", userID)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -71,4 +80,31 @@ func main() {
 
 	fmt.Println("Go service running on port 8001")
 	http.ListenAndServe(":8001", r)
+}
+
+func authMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		authHeader := r.Header.Get("Authorization")
+		if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
+			http.Error(w, "認証トークンがありません", http.StatusUnauthorized)
+			return
+		}
+
+		tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
+		secretKey := os.Getenv("SECRET_KEY")
+
+		token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+			return []byte(secretKey), nil
+		})
+
+		if err != nil || !token.Valid {
+			http.Error(w, "無効なトークンです", http.StatusUnauthorized)
+			return
+		}
+
+		claims := token.Claims.(jwt.MapClaims)
+		userID := claims["sub"].(string)
+		ctx := context.WithValue(r.Context(), "userID", userID)
+		next.ServeHTTP(w,r.WithContext(ctx))
+	})
 }

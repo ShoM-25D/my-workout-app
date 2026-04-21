@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 
-import { fetchWithAuth, API_BASE_URL } from '@/lib/api';
+import { fetchWithAuth, API_BASE_URL, GO_API_URL } from '@/lib/api';
 import { Workout } from '@/types/database';
 import { mockWorkouts as initialMockWorkouts } from '@/mocks/mockWorkouts';
 
@@ -18,7 +18,7 @@ export function useWorkouts() {
       setLoading(true);
       setError(null);
 
-      const response = await fetchWithAuth(`${API_BASE_URL}/workouts`);
+      const response = await fetchWithAuth(`${GO_API_URL}/workouts`);
       const data: Workout[] = await response.json();
       setWorkouts(data);
     } catch (err: any) {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import { fetchWithAuth, API_BASE_URL } from '@/lib/api';
+import { fetchWithAuth, API_BASE_URL, RUST_API_URL } from '@/lib/api';
 
 export type PersonalRecord = {
   exercise_name: string;
@@ -20,7 +20,7 @@ export function useStats() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchWithAuth(`${API_BASE_URL}/stats/personal_records`)
+    fetchWithAuth(`${RUST_API_URL}/stats/personal_records`)
       .then((r) => r.json())
       .then((data) => setPersonalRecords(data))
       .catch((err) => console.error(err));
