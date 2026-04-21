@@ -9,6 +9,7 @@ import { API_BASE_URL } from '@/lib/api';
 export default function LoginPageContainer() {
   const router = useRouter();
 
+  // ログイン処理
   const handleLogin = async (email: string, password: string) => {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/login`, {

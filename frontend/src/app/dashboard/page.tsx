@@ -28,6 +28,7 @@ export default function DashboardPage() {
     });
   }, []);
 
+  // ログアウト処理
   const handleLogout = () => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('user_id');

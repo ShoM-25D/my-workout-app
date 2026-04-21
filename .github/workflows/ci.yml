@@ -22,10 +22,12 @@ jobs:
           cd backend
           pip install -r requirements.txt
 
-      - name: Check syntax
+      - name: Run tests
+        env:
+          SECRET_KEY: 'test-secret-key-for-ci'
         run: |
           cd backend
-          python -m py_compile main.py database.py auth.py
+          python -m pytest tests/ -v
 
   frontend:
     runs-on: ubuntu-latest
@@ -62,10 +64,10 @@ jobs:
           cd go-service
           go mod download
 
-      - name: Build
+      - name: Run tests
         run: |
           cd go-service
-          go build ./...
+          go test ./... -v
 
   rust-service:
     runs-on: ubuntu-latest
@@ -84,7 +86,7 @@ jobs:
             rust-service/target
           key: ${{ runner.os }}-cargo-${{ hashFiles('rust-service/Cargo.lock') }}
 
-      - name: Build
+      - name: Run tests
         run: |
           cd rust-service
-          cargo build
+          cargo test

@@ -21,14 +21,14 @@ services:
       - '8000:8000'
     depends_on:
       - db
+      - go-service
+      - rust-service
 
   frontend:
     build: ./frontend
     container_name: workout_frontend
     environment:
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
-      NEXT_PUBLIC_GO_API_URL: ${NEXT_PUBLIC_GO_API_URL}
-      NEXT_PUBLIC_RUST_API_URL: ${NEXT_PUBLIC_RUST_API_URL}
     ports:
       - '3000:3000'
     depends_on:
@@ -39,8 +39,6 @@ services:
     container_name: workout_go
     environment:
       DATABASE_URL: ${DATABASE_URL_DOCKER}
-    ports:
-      - '8001:8001'
     depends_on:
       - db
 
@@ -49,8 +47,6 @@ services:
     container_name: workout_rust
     environment:
       DATABASE_URL: ${DATABASE_URL_DOCKER}
-    ports:
-      - '8002:8002'
     depends_on:
       - db
 

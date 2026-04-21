@@ -3,15 +3,15 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"strings"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/jackc/pgx/v5"
 	"github.com/joho/godotenv"
 )
@@ -19,10 +19,10 @@ import (
 var db *pgx.Conn
 
 type Workout struct {
-	ID int `json:"id"`
-	Date string `json:"date"`
-	Duration int `json:"duration"`
-	Notes *string `json:"notes"`
+	ID       int     `json:"id"`
+	Date     string  `json:"date"`
+	Duration int     `json:"duration"`
+	Notes    *string `json:"notes"`
 }
 
 func main() {
@@ -41,21 +41,26 @@ func main() {
 
 	r := chi.NewRouter()
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins: []string{"http://localhost:3000"},
-		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders: []string{"Authorization", "Content-Type"},
+		AllowedOrigins: []string{"http://backend:8000"},
+		AllowedMethods: []string{"GET", "OPTIONS"},
+		AllowedHeaders: []string{"Content-Type"},
 	}))
 
-	r.Get("/health", func(w http.ResponseWriter, r *http.Request){
+	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
 	})
 
-	r.With(authMiddleware).Get("/workouts", func(w http.ResponseWriter, r *http.Request){
-		userID := r.Context().Value("userID").(string)
+	r.Get("/internal/workouts", func(w http.ResponseWriter, r *http.Request) {
+
+		userID, err := parseUserID(r.URL.Query().Get("user_id"))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 		rows, err := db.Query(context.Background(),
-		"SELECT id, date, duration, notes FROM workouts WHERE user_id = $1 ORDER BY date DESC", userID)
+			"SELECT id, date, duration, notes FROM workouts WHERE user_id = $1 ORDER BY date DESC", userID)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -63,7 +68,7 @@ func main() {
 		defer rows.Close()
 
 		var workouts []Workout
-		for rows.Next(){
+		for rows.Next() {
 			var workout Workout
 			err := rows.Scan(&workout.ID, &workout.Date, &workout.Duration, &workout.Notes)
 			if err != nil {
@@ -82,29 +87,13 @@ func main() {
 	http.ListenAndServe(":8001", r)
 }
 
-func authMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		authHeader := r.Header.Get("Authorization")
-		if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
-			http.Error(w, "認証トークンがありません", http.StatusUnauthorized)
-			return
-		}
-
-		tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
-		secretKey := os.Getenv("SECRET_KEY")
-
-		token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
-			return []byte(secretKey), nil
-		})
-
-		if err != nil || !token.Valid {
-			http.Error(w, "無効なトークンです", http.StatusUnauthorized)
-			return
-		}
-
-		claims := token.Claims.(jwt.MapClaims)
-		userID := claims["sub"].(string)
-		ctx := context.WithValue(r.Context(), "userID", userID)
-		next.ServeHTTP(w,r.WithContext(ctx))
-	})
+func parseUserID(s string) (int, error) {
+	if s == "" {
+		return 0, errors.New("user_id is required")
+	}
+	id, err := strconv.Atoi(s)
+	if err != nil {
+		return 0, errors.New("invalid user_id")
+	}
+	return id, nil // 成功時はエラーをnilで返す
 }

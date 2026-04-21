@@ -32,6 +32,7 @@ export default function AdminExercisePage() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingName, setEditingName] = useState('');
 
+  // 種目一覧を取得
   const fetchExercises = async () => {
     fetchWithAuth(`${API_BASE_URL}/exercises`)
       .then((r) => r.json())
@@ -45,6 +46,7 @@ export default function AdminExercisePage() {
 
   if (isLoading) return <div className="p-8 text-center">読み込み中...</div>;
 
+  // 種目の新規登録
   const handleSubmit = async (e: React.FormEvent) => {
     // 更新機能をストップ
     e.preventDefault();
@@ -76,6 +78,7 @@ export default function AdminExercisePage() {
     }
   };
 
+  // 種目名の更新
   const handleUpdate = async (id: number) => {
     try {
       await fetchWithAuth(`${API_BASE_URL}/exercises/${id}`, {
@@ -96,6 +99,7 @@ export default function AdminExercisePage() {
     }
   };
 
+  // 種目の削除
   const handleDelete = async (id: number) => {
     try {
       await fetchWithAuth(`${API_BASE_URL}/exercises/${id}`, {

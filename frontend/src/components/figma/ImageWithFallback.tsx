@@ -14,7 +14,7 @@ export function ImageWithFallback(
     setDidError(true);
   };
 
-  // src、alt、style、classNameを分割代入して取得し、残りの属性はrestにまとめる
+  // 各要素を分割して、必要なものだけ使用
   const { src, alt, style, className, ...rest } = props;
 
   return didError ? (

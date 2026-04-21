@@ -31,11 +31,13 @@ export default function WorkoutDetailPage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const { deleteExercise, deleteWorkoutById } = useWorkouts();
 
+  // 種目削除ハンドラー
   const handleExerciseDeleted = (deletedExerciseId: string) => {
     setPendingExerciseId(deletedExerciseId);
     setIsDeleteExerciseOpen(true);
   };
 
+  // 種目削除確定ハンドラー
   const confirmExerciseDelete = async () => {
     try {
       await deleteExercise(pendingExerciseId!);
@@ -53,12 +55,14 @@ export default function WorkoutDetailPage() {
     }
   };
 
+  // メモ削除ハンドラー
   const confirmMemoDelete = async () => {
     setIsDeleting(true);
     await deleteWorkoutById(workout!.id);
     router.push('/dashboard');
   };
 
+  // 記録詳細の取得
   const fetchWorkout = () => {
     const id = params.id;
     fetchWithAuth(`${API_BASE_URL}/workouts/${id}`)

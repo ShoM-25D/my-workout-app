@@ -12,6 +12,11 @@
   --font-mono: var(--font-geist-mono);
 }
 
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -19,6 +24,7 @@
   }
 
   body {
+    background-color: #0a0a0a;
     color: #ededed;
   }
 

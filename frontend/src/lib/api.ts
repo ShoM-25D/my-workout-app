@@ -36,7 +36,3 @@ export async function fetchWithAuth(url: string, options?: RequestInit) {
 
 export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000';
-export const GO_API_URL =
-  process.env.NEXT_PUBLIC_GO_API_URL ?? 'http://localhost:8001';
-export const RUST_API_URL =
-  process.env.NEXT_PUBLIC_RUST_API_URL ?? 'http://localhost:8002';

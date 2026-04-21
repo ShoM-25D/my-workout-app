@@ -8,6 +8,8 @@ import { API_BASE_URL } from '@/lib/api';
 
 export default function RegisterPageConteiner() {
   const router = useRouter();
+
+  // 登録処理
   const handleRegister = async (
     name: string,
     email: string,
